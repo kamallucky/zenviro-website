@@ -1,6 +1,8 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import SmoothScroll from './three/SmoothScroll';
+import CustomCursor from './components/CustomCursor';
 
 const Home = lazy(() => import('./pages/Home'));
 const Products = lazy(() => import('./pages/Products'));
@@ -24,6 +26,8 @@ function PageLoader() {
 export default function App() {
   return (
     <BrowserRouter>
+      <CustomCursor />
+      <SmoothScroll>
       <Layout>
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -49,6 +53,7 @@ export default function App() {
           </Routes>
         </Suspense>
       </Layout>
+      </SmoothScroll>
     </BrowserRouter>
   );
 }

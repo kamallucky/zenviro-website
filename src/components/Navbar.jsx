@@ -28,7 +28,9 @@ export default function Navbar() {
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
-  const isDarkTheme = !scrolled && isHome;
+  // The home page is a dark immersive 3D world — keep the nav dark/transparent
+  // across the whole journey. Inner (light) pages flip to the solid theme on scroll.
+  const isDarkTheme = isHome ? true : !scrolled;
 
   return (
     <>
