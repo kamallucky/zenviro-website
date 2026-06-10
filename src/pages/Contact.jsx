@@ -1,473 +1,293 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Phone, MessageCircle, Mail, MapPin, CheckCircle, Send, ExternalLink,
-  Sparkles, Clock,
-} from 'lucide-react';
+import { Phone, Mail, MapPin, MessageCircle, Send, CheckCircle2 } from 'lucide-react';
+import Seo from '../components/Seo';
+import Reveal from '../components/Reveal';
+import { COMPANY, DISCLAIMERS, telHref, mailHref, waHref, mapsHref } from '../config/company';
+import { products } from '../data/products';
+import { useLang } from '../i18n';
 
-const crops = [
-  'Chilli', 'Rice', 'Cotton', 'Maize', 'Groundnut', 'Wheat', 'Tomato', 'Brinjal',
-  'Grapes', 'Mango', 'Citrus', 'Roses', 'Marigold', 'Other Vegetables', 'Other Fruits',
-];
-
-const contactCards = [
-  {
-    Icon: Phone,
-    title: 'Call Us',
-    primary: '+91 93479 59693',
-    sub: 'Available Mon–Sat, 8 AM – 7 PM',
-    href: 'tel:+919347959693',
-    color: 'var(--green-mid)',
-    bg: 'rgba(26,92,42,0.08)',
-  },
-  {
-    Icon: MessageCircle,
-    title: 'WhatsApp',
-    primary: 'Chat with us instantly',
-    sub: 'Fastest response — within 1 hour',
-    href: 'https://wa.me/919347959693?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20Zenviro%20products',
-    color: '#25D366',
-    bg: 'rgba(37,211,102,0.1)',
-    external: true,
-  },
-  {
-    Icon: Mail,
-    title: 'Email',
-    primary: 'info@zenviroagro.com',
-    sub: 'For partnerships and detailed enquiries',
-    href: 'mailto:info@zenviroagro.com',
-    color: 'var(--gold)',
-    bg: 'rgba(239,159,39,0.12)',
-  },
+const ENQUIRY_TYPES = [
+  { id: 'farmer', label: 'Farmer Enquiry' },
+  { id: 'dealer', label: 'Dealer Enquiry' },
+  { id: 'distributor', label: 'Distributor Enquiry' },
+  { id: 'bulk', label: 'Bulk Order' },
+  { id: 'product', label: 'Product Question' },
+  { id: 'general', label: 'General Question' },
 ];
 
 export default function Contact() {
-  const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState(null);
+  const { t } = useLang();
+  const [searchParams] = useSearchParams();
+  const [sent, setSent] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm();
+  const prefillProduct = searchParams.get('product') ?? '';
+  const prefillType = searchParams.get('type') ?? 'farmer';
 
-  const onSubmit = (data) => {
-    console.log('Form submission:', data);
-    setFormData(data);
-    setSubmitted(true);
-    reset();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: {
+      name: '',
+      mobile: '',
+      email: '',
+      location: '',
+      product: prefillProduct,
+      enquiryType: ENQUIRY_TYPES.some((e) => e.id === prefillType) ? prefillType : 'farmer',
+      message: '',
+    },
+  });
+
+  useEffect(() => {
+    document.getElementById('enquiry-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
+  const buildMessage = (data) => {
+    const type = ENQUIRY_TYPES.find((e) => e.id === data.enquiryType)?.label ?? 'Enquiry';
+    return [
+      `Hi ${COMPANY.name}, new ${type.toLowerCase()} from the website:`,
+      data.name && `Name: ${data.name}`,
+      data.mobile && `Mobile: ${data.mobile}`,
+      data.location && `Location: ${data.location}`,
+      data.product && `Interested product: ${data.product}`,
+      data.message && `Message: ${data.message}`,
+    ].filter(Boolean).join('\n');
   };
 
-  const getWhatsAppMessage = (data) => {
-    if (!data) return '';
-    const msg = [
-      `Hi Zenviro,`, ``,
-      `Name: ${data.name}`,
-      `Phone: ${data.phone}`,
-      `Crop: ${data.crop}`,
-      data.product ? `Product Interest: ${data.product}` : null,
-      data.message ? `Message: ${data.message}` : null,
-      ``,
-      `Please help me with more information.`,
-    ].filter(Boolean).join('\n');
-    return encodeURIComponent(msg);
+  const onSubmit = (data) => {
+    // No backend — hand the structured enquiry to WhatsApp, our fastest channel.
+    window.open(waHref(buildMessage(data)), '_blank', 'noopener,noreferrer');
+    setSent(true);
+    reset({ ...data, message: '' });
   };
 
   return (
-    <div style={{ background: 'var(--cream)' }}>
-      {/* HEADER */}
-      <header style={{ background: 'var(--green-deep)' }} className="pt-32 pb-20 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 50% 60% at 0% 50%, rgba(239,159,39,0.1) 0%, transparent 60%)' }} />
-        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <pattern id="ct-field" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse" patternTransform="rotate(22)">
-              <line x1="0" y1="0" x2="0" y2="80" stroke="rgba(255,255,255,0.05)" strokeWidth="1.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#ct-field)"/>
-        </svg>
+    <>
+      <Seo
+        title="Contact Us | Zenviro Agro Chemicals"
+        description={`Contact Zenviro Agro Chemicals for farmer, dealer, distributor and bulk order enquiries. Call ${COMPANY.phones[0]}, WhatsApp, or email ${COMPANY.email}.`}
+        path="/contact"
+      />
 
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-6"
-              style={{ background: 'rgba(239,159,39,0.15)', color: 'var(--gold)', border: '1px solid rgba(239,159,39,0.25)' }}>
-              <Sparkles size={12} />
-              Get In Touch
-            </div>
-            <h1 className="font-display font-bold text-white leading-[1.05] mb-6"
-              style={{ fontSize: 'clamp(40px, 6vw, 68px)', letterSpacing: '-0.025em' }}>
-              We're Here to Help.
-              <br />
-              <span style={{ color: 'var(--gold)' }}>Real People, Real Support.</span>
+      <section className="border-b border-line/70 bg-beige">
+        <div className="container-site py-14 sm:py-16">
+          <Reveal>
+            <p className="eyebrow mb-3">{t('contact')}</p>
+            <h1 className="text-3xl font-extrabold text-forest-dark sm:text-4xl lg:text-5xl">
+              Request a consultation
             </h1>
-            <p className="text-lg sm:text-xl leading-relaxed max-w-2xl" style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.7 }}>
-              Have a question about a product? Need expert advice for your crop? Our team responds fast — usually within an hour.
+            <p className="mt-4 max-w-2xl text-base text-ink-soft sm:text-lg">
+              Farmer questions, dealer pricing, distributor partnerships or bulk orders — send an
+              enquiry and the Zenviro team will respond promptly.
             </p>
-          </motion.div>
-        </div>
-      </header>
-
-      {/* CONTACT CARDS */}
-      <section className="py-16 lg:py-20 -mt-12 relative z-10">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid sm:grid-cols-3 gap-5">
-            {contactCards.map((card, i) => (
-              <motion.a
-                key={card.title}
-                href={card.href}
-                target={card.external ? '_blank' : undefined}
-                rel={card.external ? 'noopener noreferrer' : undefined}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group bg-white rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1"
-                style={{
-                  border: '1.5px solid #F3F4F6',
-                  boxShadow: '0 8px 32px rgba(15,61,31,0.08)',
-                }}
-              >
-                <div className="flex items-start justify-between mb-5">
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110"
-                    style={{ background: card.bg }}>
-                    <card.Icon size={24} style={{ color: card.color }} />
-                  </div>
-                  {card.external && (
-                    <ExternalLink size={16} className="opacity-30 transition-opacity group-hover:opacity-70"
-                      style={{ color: 'var(--ink-soft)' }} />
-                  )}
-                </div>
-                <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--ink-soft)' }}>
-                  {card.title}
-                </p>
-                <p className="font-display font-bold text-lg mb-2 transition-colors"
-                  style={{ color: 'var(--green-deep)' }}>
-                  {card.primary}
-                </p>
-                <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>{card.sub}</p>
-              </motion.a>
-            ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* FORM + MAP */}
-      <section className="pb-28 lg:pb-36">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid lg:grid-cols-5 gap-10 lg:gap-12">
+      <section className="section bg-cream">
+        <div className="container-site grid gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+          <Reveal id="enquiry-form" className="scroll-mt-28">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="card flex flex-col gap-5 p-7 sm:p-9">
+              <h2 className="text-xl font-extrabold text-forest-dark">Send an enquiry</h2>
 
-            {/* LEFT: Form */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="lg:col-span-3"
-            >
-              <AnimatePresence mode="wait">
-                {submitted ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="bg-white rounded-3xl p-12 text-center"
-                    style={{ border: '1.5px solid #BBF7D0', boxShadow: '0 8px 32px rgba(15,61,31,0.08)' }}
-                  >
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.2, type: 'spring' }}
-                      className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
-                      style={{ background: 'linear-gradient(135deg, #BBF7D0, #86EFAC)' }}
-                    >
-                      <CheckCircle size={40} style={{ color: 'var(--green-mid)' }} />
-                    </motion.div>
-                    <h3 className="font-display font-bold text-3xl mb-3" style={{ color: 'var(--green-deep)', letterSpacing: '-0.02em' }}>
-                      Message Received!
-                    </h3>
-                    <p className="text-base mb-8 max-w-md mx-auto" style={{ color: 'var(--ink-soft)', lineHeight: 1.7 }}>
-                      We'll contact you within 24 hours. For faster response, WhatsApp us directly with the details below.
-                    </p>
+              {sent && (
+                <p role="status" className="flex items-start gap-3 rounded-xl border border-leaf/30 bg-leaf/8 px-4 py-3.5 text-sm text-ink">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-leaf" aria-hidden="true" />
+                  Your enquiry has been opened in WhatsApp — press send there to reach us instantly.
+                  You can also call us directly on {COMPANY.phones[0]}.
+                </p>
+              )}
 
-                    {formData && (
-                      <a
-                        href={`https://wa.me/919347959693?text=${getWhatsAppMessage(formData)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl text-sm font-bold text-white mb-5 transition-all hover:-translate-y-0.5"
-                        style={{ background: '#25D366', boxShadow: '0 8px 24px rgba(37,211,102,0.35)' }}
-                      >
-                        <MessageCircle size={18} />
-                        Send via WhatsApp Now
-                      </a>
-                    )}
-                    <div>
-                      <button
-                        onClick={() => { setSubmitted(false); setFormData(null); }}
-                        className="text-sm font-bold transition-colors hover:opacity-80"
-                        style={{ color: 'var(--green-mid)' }}
-                      >
-                        Send another message
-                      </button>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="form"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="bg-white rounded-3xl p-8 lg:p-10"
-                    style={{ border: '1.5px solid #F3F4F6', boxShadow: '0 8px 32px rgba(15,61,31,0.08)' }}
-                  >
-                    <h2 className="font-display font-bold text-3xl mb-2" style={{ color: 'var(--green-deep)', letterSpacing: '-0.02em' }}>
-                      Send Us a Message
-                    </h2>
-                    <p className="text-base mb-8" style={{ color: 'var(--ink-soft)', lineHeight: 1.7 }}>
-                      Tell us about your crop or product needs. We respond within 24 hours.
-                    </p>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="name" className="mb-1.5 block text-sm font-semibold text-ink">Name *</label>
+                  <input
+                    id="name"
+                    type="text"
+                    autoComplete="name"
+                    className="input"
+                    placeholder="Your full name"
+                    aria-invalid={errors.name ? 'true' : undefined}
+                    {...register('name', { required: 'Please enter your name' })}
+                  />
+                  {errors.name && <p role="alert" className="mt-1.5 text-xs font-medium text-red-700">{errors.name.message}</p>}
+                </div>
+                <div>
+                  <label htmlFor="mobile" className="mb-1.5 block text-sm font-semibold text-ink">Mobile Number *</label>
+                  <input
+                    id="mobile"
+                    type="tel"
+                    autoComplete="tel"
+                    inputMode="numeric"
+                    className="input"
+                    placeholder="10-digit mobile number"
+                    aria-invalid={errors.mobile ? 'true' : undefined}
+                    {...register('mobile', {
+                      required: 'Please enter your mobile number',
+                      pattern: { value: /^[6-9]\d{9}$/, message: 'Enter a valid 10-digit mobile number' },
+                    })}
+                  />
+                  {errors.mobile && <p role="alert" className="mt-1.5 text-xs font-medium text-red-700">{errors.mobile.message}</p>}
+                </div>
+                <div>
+                  <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-ink">Email</label>
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    className="input"
+                    placeholder="you@example.com"
+                    aria-invalid={errors.email ? 'true' : undefined}
+                    {...register('email', {
+                      pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' },
+                    })}
+                  />
+                  {errors.email && <p role="alert" className="mt-1.5 text-xs font-medium text-red-700">{errors.email.message}</p>}
+                </div>
+                <div>
+                  <label htmlFor="location" className="mb-1.5 block text-sm font-semibold text-ink">Location</label>
+                  <input
+                    id="location"
+                    type="text"
+                    autoComplete="address-level2"
+                    className="input"
+                    placeholder="Village / Mandal / District"
+                    {...register('location')}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="product" className="mb-1.5 block text-sm font-semibold text-ink">Interested Product</label>
+                  <input
+                    id="product"
+                    type="text"
+                    className="input"
+                    list="product-options"
+                    placeholder="e.g. Titanic, Roxcin…"
+                    {...register('product')}
+                  />
+                  <datalist id="product-options">
+                    {products.map((p) => (
+                      <option key={p.id} value={p.name} />
+                    ))}
+                  </datalist>
+                </div>
+                <div>
+                  <label htmlFor="enquiryType" className="mb-1.5 block text-sm font-semibold text-ink">Enquiry Type *</label>
+                  <select id="enquiryType" className="input" {...register('enquiryType')}>
+                    {ENQUIRY_TYPES.map((e) => (
+                      <option key={e.id} value={e.id}>{e.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                      <div className="space-y-6">
-                        {/* Name */}
-                        <div>
-                          <label htmlFor="name" className="block text-sm font-bold mb-2.5" style={{ color: 'var(--ink)' }}>
-                            Your Name <span style={{ color: '#DC2626' }}>*</span>
-                          </label>
-                          <input
-                            id="name"
-                            type="text"
-                            placeholder="e.g. Ramesh Kumar"
-                            className={`w-full px-5 py-4 rounded-2xl text-base outline-none transition-all duration-300 ${
-                              errors.name ? 'border-red-400' : 'border-gray-200'
-                            }`}
-                            style={{
-                              background: 'var(--cream)',
-                              color: 'var(--ink)',
-                              border: errors.name ? '2px solid #F87171' : '2px solid transparent',
-                            }}
-                            onFocus={e => !errors.name && (e.target.style.borderColor = 'var(--green-mid)')}
-                            onBlur={e => !errors.name && (e.target.style.borderColor = 'transparent')}
-                            {...register('name', { required: 'Name is required' })}
-                          />
-                          {errors.name && (
-                            <p className="mt-2 text-xs font-medium" style={{ color: '#DC2626' }}>{errors.name.message}</p>
-                          )}
-                        </div>
-
-                        {/* Phone */}
-                        <div>
-                          <label htmlFor="phone" className="block text-sm font-bold mb-2.5" style={{ color: 'var(--ink)' }}>
-                            Mobile Number <span style={{ color: '#DC2626' }}>*</span>
-                          </label>
-                          <div className="relative flex items-center">
-                            <div
-                              className="absolute left-0 top-0 bottom-0 flex items-center px-5 pointer-events-none"
-                              style={{
-                                borderRight: '1.5px solid rgba(15,26,15,0.1)',
-                              }}
-                            >
-                              <span className="text-base font-semibold tabular-nums" style={{ color: 'var(--ink-soft)' }}>+91</span>
-                            </div>
-                            <input
-                              id="phone"
-                              type="tel"
-                              placeholder="98765 43210"
-                              className="w-full py-4 pr-5 rounded-2xl text-base outline-none transition-all duration-300"
-                              style={{
-                                background: 'var(--cream)',
-                                color: 'var(--ink)',
-                                border: errors.phone ? '2px solid #F87171' : '2px solid transparent',
-                                paddingLeft: '78px',
-                              }}
-                              onFocus={e => !errors.phone && (e.target.style.borderColor = 'var(--green-mid)')}
-                              onBlur={e => !errors.phone && (e.target.style.borderColor = 'transparent')}
-                              {...register('phone', {
-                                required: 'Mobile number is required',
-                                pattern: { value: /^[6-9]\d{9}$/, message: 'Enter a valid 10-digit Indian mobile number' },
-                              })}
-                            />
-                          </div>
-                          {errors.phone && (
-                            <p className="mt-2 text-xs font-medium" style={{ color: '#DC2626' }}>{errors.phone.message}</p>
-                          )}
-                        </div>
-
-                        {/* Crop */}
-                        <div>
-                          <label htmlFor="crop" className="block text-sm font-bold mb-2.5" style={{ color: 'var(--ink)' }}>
-                            Your Crop <span style={{ color: '#DC2626' }}>*</span>
-                          </label>
-                          <select
-                            id="crop"
-                            className="w-full px-5 py-4 rounded-2xl text-base outline-none transition-all duration-300 cursor-pointer"
-                            style={{
-                              background: 'var(--cream)',
-                              color: 'var(--ink)',
-                              border: errors.crop ? '2px solid #F87171' : '2px solid transparent',
-                            }}
-                            onFocus={e => !errors.crop && (e.target.style.borderColor = 'var(--green-mid)')}
-                            onBlur={e => !errors.crop && (e.target.style.borderColor = 'transparent')}
-                            {...register('crop', { required: 'Please select your crop' })}
-                            defaultValue=""
-                          >
-                            <option value="" disabled>Select your crop...</option>
-                            {crops.map(c => <option key={c} value={c}>{c}</option>)}
-                          </select>
-                          {errors.crop && (
-                            <p className="mt-2 text-xs font-medium" style={{ color: '#DC2626' }}>{errors.crop.message}</p>
-                          )}
-                        </div>
-
-                        {/* Product Interest */}
-                        <div>
-                          <label htmlFor="product" className="block text-sm font-bold mb-2.5" style={{ color: 'var(--ink)' }}>
-                            Product Interest <span className="text-xs font-normal" style={{ color: 'var(--ink-soft)' }}>— optional</span>
-                          </label>
-                          <input
-                            id="product"
-                            type="text"
-                            placeholder="e.g. Block Rock, Imidacloprid 17.8 SL..."
-                            className="w-full px-5 py-4 rounded-2xl text-base outline-none transition-all duration-300"
-                            style={{ background: 'var(--cream)', color: 'var(--ink)', border: '2px solid transparent' }}
-                            onFocus={e => (e.target.style.borderColor = 'var(--green-mid)')}
-                            onBlur={e => (e.target.style.borderColor = 'transparent')}
-                            {...register('product')}
-                          />
-                        </div>
-
-                        {/* Message */}
-                        <div>
-                          <label htmlFor="message" className="block text-sm font-bold mb-2.5" style={{ color: 'var(--ink)' }}>
-                            Your Message <span className="text-xs font-normal" style={{ color: 'var(--ink-soft)' }}>— optional</span>
-                          </label>
-                          <textarea
-                            id="message"
-                            rows={4}
-                            placeholder="Tell us about your crop problem or what you need..."
-                            className="w-full px-5 py-4 rounded-2xl text-base outline-none transition-all duration-300 resize-none"
-                            style={{ background: 'var(--cream)', color: 'var(--ink)', border: '2px solid transparent' }}
-                            onFocus={e => (e.target.style.borderColor = 'var(--green-mid)')}
-                            onBlur={e => (e.target.style.borderColor = 'transparent')}
-                            {...register('message')}
-                          />
-                        </div>
-
-                        {/* Submit */}
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="btn-gold flex items-center justify-center gap-2 w-full py-4.5 rounded-2xl text-base font-bold disabled:opacity-70 transition-all"
-                          style={{ paddingTop: '18px', paddingBottom: '18px' }}
-                        >
-                          {isSubmitting ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                              Sending...
-                            </>
-                          ) : (
-                            <>
-                              <Send size={18} />
-                              Send Message
-                            </>
-                          )}
-                        </button>
-
-                        <p className="text-xs text-center pt-2" style={{ color: 'var(--ink-soft)' }}>
-                          Need faster response?{' '}
-                          <a
-                            href="https://wa.me/919347959693?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20Zenviro%20products"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-bold hover:underline"
-                            style={{ color: '#25D366' }}
-                          >
-                            WhatsApp us directly →
-                          </a>
-                        </p>
-                      </div>
-                    </form>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-
-            {/* RIGHT: Map + Info */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="lg:col-span-2 space-y-5"
-            >
-              {/* Map */}
-              <div className="rounded-3xl overflow-hidden"
-                style={{ border: '1.5px solid #F3F4F6', boxShadow: '0 8px 32px rgba(15,61,31,0.08)', height: '320px' }}>
-                <iframe
-                  title="Zenviro Agro Chemicals — Injapur, Rangareddy"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30459.7!2d78.3767!3d17.2543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcba89eb7bfe3a9%3A0x85c8bb1e78f3451d!2sInjapur%2C%20Telangana!5e0!3m2!1sen!2sin!4v1234567890"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
+              <div>
+                <label htmlFor="message" className="mb-1.5 block text-sm font-semibold text-ink">Message</label>
+                <textarea
+                  id="message"
+                  rows={4}
+                  className="input resize-y"
+                  placeholder="Tell us about your crop, quantity or question…"
+                  {...register('message')}
                 />
               </div>
 
-              {/* Address card */}
-              <div className="bg-white rounded-3xl p-7"
-                style={{ border: '1.5px solid #F3F4F6', boxShadow: '0 8px 32px rgba(15,61,31,0.08)' }}>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(26,92,42,0.08)' }}>
-                    <MapPin size={22} style={{ color: 'var(--green-mid)' }} />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--ink-soft)' }}>
-                      Visit Our Facility
-                    </p>
-                    <p className="font-display font-bold text-lg" style={{ color: 'var(--green-deep)' }}>
-                      Injapur, Rangareddy
-                    </p>
-                    <p className="text-sm mt-1" style={{ color: 'var(--ink-soft)', lineHeight: 1.7 }}>
-                      Hyderabad, Telangana<br />India
-                    </p>
-                  </div>
-                </div>
+              <div className="flex flex-wrap gap-3">
+                <button type="submit" className="btn-primary" data-analytics="contact-sales">
+                  <Send className="h-4 w-4" aria-hidden="true" />
+                  {t('sendEnquiry')}
+                </button>
+                <a
+                  href={waHref(`Hi ${COMPANY.name}, I would like to make an enquiry.${prefillProduct ? ` Interested product: ${prefillProduct}.` : ''}`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn bg-[#1faf57] text-white hover:bg-[#178a45] hover:-translate-y-0.5"
+                  data-analytics="whatsapp-product-enquiry"
+                >
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                  WhatsApp Zenviro
+                </a>
+                <a href={telHref()} className="btn-outline" data-analytics="contact-sales">
+                  <Phone className="h-4 w-4" aria-hidden="true" />
+                  {t('callNow')}
+                </a>
               </div>
+              <p className="text-xs leading-relaxed text-ink-soft">
+                Submitting opens WhatsApp with your enquiry pre-filled — nothing is sent until you
+                confirm there. {DISCLAIMERS.price}
+              </p>
+            </form>
+          </Reveal>
 
-              {/* Hours */}
-              <div className="bg-white rounded-3xl p-7"
-                style={{ border: '1.5px solid #F3F4F6', boxShadow: '0 8px 32px rgba(15,61,31,0.08)' }}>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(239,159,39,0.12)' }}>
-                    <Clock size={22} style={{ color: 'var(--gold)' }} />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--ink-soft)' }}>
-                      Business Hours
-                    </p>
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between text-sm">
-                        <span style={{ color: 'var(--ink-soft)' }}>Monday – Saturday</span>
-                        <span className="font-semibold" style={{ color: 'var(--green-deep)' }}>8 AM – 7 PM</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span style={{ color: 'var(--ink-soft)' }}>Sunday</span>
-                        <span className="font-semibold" style={{ color: '#DC2626' }}>Closed</span>
-                      </div>
-                    </div>
-                  </div>
+          <div className="flex flex-col gap-5">
+            <Reveal delay={0.05}>
+              <div className="card p-7">
+                <h2 className="mb-5 text-lg font-extrabold text-forest-dark">Contact details</h2>
+                <address className="flex flex-col gap-4 text-sm not-italic text-ink-soft">
+                  <span className="flex items-start gap-3">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-leaf" aria-hidden="true" />
+                    <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="hover:text-forest">
+                      <strong className="text-ink">{COMPANY.name}</strong>
+                      <br />
+                      {COMPANY.address.line1},<br />
+                      {COMPANY.address.line2}
+                    </a>
+                  </span>
+                  <span className="flex items-start gap-3">
+                    <Phone className="mt-0.5 h-4 w-4 shrink-0 text-leaf" aria-hidden="true" />
+                    <span className="flex flex-col gap-1">
+                      {COMPANY.phones.map((p) => (
+                        <a key={p} href={telHref(p)} className="font-semibold text-ink hover:text-leaf">{p}</a>
+                      ))}
+                    </span>
+                  </span>
+                  <span className="flex items-center gap-3">
+                    <Mail className="h-4 w-4 shrink-0 text-leaf" aria-hidden="true" />
+                    <a href={mailHref()} className="break-all font-semibold text-ink hover:text-leaf">{COMPANY.email}</a>
+                  </span>
+                </address>
+                <p className="mt-5 rounded-lg bg-mist px-3.5 py-2.5 text-xs text-ink-soft">
+                  GST: <strong className="text-ink">{COMPANY.gst}</strong>
+                </p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <div className="card overflow-hidden bg-forest-dark p-7 text-cream">
+                <h2 className="mb-2 text-lg font-extrabold">Dealers & bulk buyers</h2>
+                <p className="mb-5 text-sm leading-relaxed text-cream/70">
+                  Bulk and dealer discounts available on the full Zenviro range. Talk to sales for
+                  partner pricing.
+                </p>
+                <div className="flex flex-wrap gap-2.5">
+                  <a href={telHref()} className="btn-gold !px-5 !py-2.5 text-xs" data-analytics="dealer-enquiry">
+                    <Phone className="h-4 w-4" aria-hidden="true" /> Call Sales
+                  </a>
+                  <a
+                    href={waHref(`Hi ${COMPANY.name}, I am interested in dealer/bulk pricing. Please share details.`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-light !px-5 !py-2.5 text-xs"
+                    data-analytics="bulk-order-enquiry"
+                  >
+                    <MessageCircle className="h-4 w-4" aria-hidden="true" /> WhatsApp Sales
+                  </a>
                 </div>
               </div>
-            </motion.div>
+            </Reveal>
+
+            <Reveal delay={0.15}>
+              <iframe
+                title="Zenviro Agro Chemicals location map"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(COMPANY.address.full)}&output=embed`}
+                className="h-64 w-full rounded-2xl border border-line/80 shadow-(--shadow-card)"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </Reveal>
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }

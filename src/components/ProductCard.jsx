@@ -1,169 +1,73 @@
 import { Link } from 'react-router-dom';
-import { MessageCircle, Star, ArrowUpRight } from 'lucide-react';
-import { motion } from 'framer-motion';
-import ProductBottle from './ProductBottle';
+import { MessageCircle, ArrowUpRight } from 'lucide-react';
+import { formatINR, startingPrice, getCategoryById } from '../data/products';
+import { waHref, waProductMessage } from '../config/company';
+import { useLang } from '../i18n';
 
-const categoryColors = {
-  insecticides: { bg: '#FEF2F2', color: '#DC2626', border: '#FECACA', soft: '#FFF7F7' },
-  fungicides: { bg: '#F5F3FF', color: '#7C3AED', border: '#DDD6FE', soft: '#FAFAFF' },
-  herbicides: { bg: '#FFFBEB', color: '#D97706', border: '#FDE68A', soft: '#FFFCF0' },
-  'plant-growth': { bg: '#ECFDF5', color: '#059669', border: '#A7F3D0', soft: '#F4FDF8' },
-  micronutrients: { bg: '#EFF6FF', color: '#2563EB', border: '#BFDBFE', soft: '#F5F9FF' },
-  biostimulants: { bg: '#F0FDF4', color: '#0F3D1F', border: '#BBF7D0', soft: '#F6FDF8' },
-};
-
-const categoryLabels = {
-  insecticides: 'Insecticide',
-  fungicides: 'Fungicide',
-  herbicides: 'Herbicide',
-  'plant-growth': 'Plant Growth',
-  micronutrients: 'Micronutrient',
-  biostimulants: 'Biostimulant',
-};
-
-export default function ProductCard({ product, index = 0 }) {
-  const colors = categoryColors[product.category] || categoryColors.biostimulants;
-  const maxCrops = 3;
-  const visibleCrops = product.crops.slice(0, maxCrops);
-  const extraCrops = product.crops.length - maxCrops;
-
-  const waMessage = encodeURIComponent(
-    `Hi, I'm interested in ${product.name} (${product.formulation}). Please share details and pricing.`
-  );
+export default function ProductCard({ product }) {
+  const { t } = useLang();
+  const category = getCategoryById(product.category);
+  const from = startingPrice(product);
+  const multi = product.variants.length > 1;
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ delay: index * 0.06, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-      layout
-      className="product-card group bg-white rounded-3xl overflow-hidden flex flex-col h-full"
-      style={{
-        border: '1.5px solid #F3F4F6',
-        boxShadow: '0 4px 24px rgba(15,61,31,0.06)',
-      }}
-    >
-      {/* Product Image Area — generous height, brochure-style backdrop */}
-      <div
-        className="relative flex items-center justify-center pt-12 pb-10"
-        style={{
-          background: `linear-gradient(160deg, ${colors.soft} 0%, ${colors.bg} 100%)`,
-          minHeight: '300px',
-        }}
-      >
-        {/* Decorative grid pattern */}
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: `linear-gradient(${colors.color} 1px, transparent 1px), linear-gradient(90deg, ${colors.color} 1px, transparent 1px)`,
-            backgroundSize: '24px 24px',
-          }} />
-
-        {/* Category badge — top-left */}
-        <span
-          className="absolute top-5 left-5 px-3 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase z-10"
-          style={{
-            background: 'rgba(255,255,255,0.85)',
-            backdropFilter: 'blur(8px)',
-            color: colors.color,
-            border: `1px solid ${colors.border}`,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-          }}
+    <div className="tilt-zone h-full">
+      <article className="tilt-card card flex h-full flex-col overflow-hidden">
+        <Link
+          to={`/products/${product.id}`}
+          aria-label={`${product.name} — ${t('viewDetails')}`}
+          className="group relative block bg-linear-to-b from-mist to-beige/60 p-6"
         >
-          {categoryLabels[product.category]}
-        </span>
+          <span className="absolute left-4 top-4 z-10 flex flex-col items-start gap-1.5">
+            <span className="badge-line bg-white/80 backdrop-blur">{category.short}</span>
+            {product.type && <span className="badge-gold bg-white/80 backdrop-blur">{product.type}</span>}
+          </span>
+          <span aria-hidden="true" className="absolute inset-x-10 bottom-5 h-5 rounded-[50%] bg-forest/15 blur-md" />
+          <img
+            src={product.image}
+            alt={`${product.name} product pack`}
+            loading="lazy"
+            className="tilt-pop relative mx-auto h-44 w-auto max-w-full rounded-lg object-contain drop-shadow-[0_14px_18px_rgb(23_33_28/0.22)] sm:h-48"
+          />
+        </Link>
 
-        {/* Featured star — top-right */}
-        {product.featured && (
-          <div
-            className="absolute top-5 right-5 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider z-10"
-            style={{
-              background: 'linear-gradient(135deg, #EF9F27 0%, #d4891a 100%)',
-              color: 'white',
-              boxShadow: '0 4px 12px rgba(239,159,39,0.45)',
-            }}
-          >
-            <Star size={11} className="fill-white" />
-            Featured
-          </div>
-        )}
-
-        {/* The bottle */}
-        <div className="relative transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-1">
-          <ProductBottle product={product} size="md" />
-        </div>
-
-        {/* Soft glow under bottle */}
-        <div className="absolute pointer-events-none"
-          style={{
-            bottom: '8%', left: '50%', transform: 'translateX(-50%)',
-            width: '60%', height: '20px',
-            background: `radial-gradient(ellipse, ${colors.color}25 0%, transparent 70%)`,
-            filter: 'blur(8px)',
-          }} />
-      </div>
-
-      {/* Content — generous padding and breathing room */}
-      <div className="flex flex-col flex-1 p-7 gap-4">
-        <div>
-          <h3 className="font-display font-bold text-[#0F1A0F] leading-tight" style={{ fontSize: '22px', letterSpacing: '-0.01em' }}>
-            {product.name}
+        <div className="flex flex-1 flex-col gap-1 px-5 pb-5 pt-4">
+          <h3 className="text-lg font-extrabold text-forest-dark">
+            <Link to={`/products/${product.id}`} className="hover:text-leaf">
+              {product.name}
+            </Link>
           </h3>
-          <p className="text-[13px] font-mono mt-1.5" style={{ color: 'var(--ink-soft)' }}>
-            {product.formulation}
-          </p>
-        </div>
-
-        {/* Crop chips */}
-        <div className="flex flex-wrap gap-1.5">
-          {visibleCrops.map(crop => (
-            <span
-              key={crop}
-              className="px-2.5 py-1 rounded-full text-[11px] font-medium"
-              style={{ background: 'var(--cream-dark)', color: 'var(--ink-soft)' }}
-            >
-              {crop}
-            </span>
-          ))}
-          {extraCrops > 0 && (
-            <span
-              className="px-2.5 py-1 rounded-full text-[11px] font-bold"
-              style={{ background: colors.bg, color: colors.color }}
-            >
-              +{extraCrops} more
-            </span>
+          {product.teluguName && (
+            <p lang="te" className="font-telugu text-sm text-ink-soft">{product.teluguName}</p>
           )}
-        </div>
 
-        {/* Actions — properly spaced */}
-        <div className="flex gap-2.5 mt-auto pt-2">
-          <Link
-            to={`/products/${product.id}`}
-            className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-[13px] font-semibold transition-all duration-300 hover:bg-gray-50"
-            style={{
-              border: '1.5px solid var(--green-mid)',
-              color: 'var(--green-mid)',
-            }}
-          >
-            View Details
-            <ArrowUpRight size={14} />
-          </Link>
-          <a
-            href={`https://wa.me/919347959693?text=${waMessage}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Enquire about ${product.name} on WhatsApp`}
-            className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-[13px] font-semibold text-white transition-all duration-300 hover:scale-105"
-            style={{
-              background: 'linear-gradient(135deg, #EF9F27 0%, #d4891a 100%)',
-              boxShadow: '0 4px 12px rgba(239,159,39,0.35)',
-              minWidth: '52px',
-            }}
-          >
-            <MessageCircle size={16} />
-          </a>
+          <div className="mt-3 flex items-end justify-between gap-2">
+            <div>
+              <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-ink-soft">
+                {multi ? `${t('startingFrom')} · ${product.variants.length} sizes` : product.variants[0].size}
+              </p>
+              <p className="text-xl font-extrabold text-forest">{formatINR(from)}</p>
+            </div>
+          </div>
+
+          <div className="mt-4 flex gap-2">
+            <Link to={`/products/${product.id}`} className="btn-outline flex-1 !px-4 !py-2.5 text-[0.8rem]">
+              {t('viewDetails')}
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <a
+              href={waHref(waProductMessage(product.name, product.variants[0].size))}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-analytics="whatsapp-product-enquiry"
+              aria-label={`WhatsApp enquiry for ${product.name}`}
+              className="btn !p-2.5 bg-[#1faf57] text-white hover:bg-[#178a45] hover:-translate-y-0.5"
+            >
+              <MessageCircle className="h-5 w-5" aria-hidden="true" />
+            </a>
+          </div>
         </div>
-      </div>
-    </motion.article>
+      </article>
+    </div>
   );
 }

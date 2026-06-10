@@ -1,272 +1,420 @@
+// Product data — source of truth: official Zenviro Agro Chemicals price list.
+// Prices in INR. Taglines come from the product packaging shown in the catalog.
+import titanicImg from '../assets/products/titanic-product.webp';
+import spiderImg from '../assets/products/spider-product.webp';
+import zennutriImg from '../assets/products/zennutri-product.webp';
+import zenviMaxImg from '../assets/products/zenvi-max-product.webp';
+import zenviProImg from '../assets/products/zenvi-pro-product.webp';
+import zenviRhizaImg from '../assets/products/zenvi-rhiza-product.webp';
+import yieldoraImg from '../assets/products/yieldora-product.webp';
+import zenviPlusImg from '../assets/products/zenvi-plus-product.webp';
+import roxcinImg from '../assets/products/roxcin-product.webp';
+import toxxicImg from '../assets/products/toxxic-product.webp';
+import doomXImg from '../assets/products/doom-x-product.webp';
+import tomJerryImg from '../assets/products/tom-jerry-product.webp';
+import revoxImg from '../assets/products/revox-product.webp';
+import redoxImg from '../assets/products/redox-product.webp';
+import blackRoockImg from '../assets/products/black-roock-product.webp';
+import rangRoverImg from '../assets/products/rang-rover-product.webp';
+import leninImg from '../assets/products/lenin-product.webp';
+import terminalImg from '../assets/products/terminal-product.webp';
+import inflowisImg from '../assets/products/inflowis-product.webp';
+import invideaImg from '../assets/products/invidea-product.webp';
+import exozenImg from '../assets/products/exozen-product.webp';
+import predatorImg from '../assets/products/predator-product.webp';
+import boronImg from '../assets/products/boron-20-product.webp';
+import zincImg from '../assets/products/zinc-edta-12-product.webp';
+import ferroImg from '../assets/products/ferro-eddha-6-product.webp';
+import magnesiumImg from '../assets/products/magnesium-sulphate-product.webp';
+import fulvicImg from '../assets/products/fulvic-power-product.webp';
+import aminoImg from '../assets/products/amino-power-product.webp';
+import seaweedImg from '../assets/products/seaweed-extract-product.webp';
+import humicImg from '../assets/products/humic-power-product.webp';
+import roottexImg from '../assets/products/roottex-product.webp';
+import terandoImg from '../assets/products/terando-product.webp';
+import pushpaImg from '../assets/products/pushpa-2-product.webp';
+
 export const categories = [
-  { id: 'insecticides', label: 'Insecticides', color: '#DC2626', bgColor: '#FEF2F2', count: 3 },
-  { id: 'fungicides', label: 'Fungicides', color: '#7C3AED', bgColor: '#F5F3FF', count: 2 },
-  { id: 'herbicides', label: 'Herbicides', color: '#D97706', bgColor: '#FFFBEB', count: 2 },
-  { id: 'plant-growth', label: 'Plant Growth', color: '#059669', bgColor: '#ECFDF5', count: 2 },
-  { id: 'micronutrients', label: 'Micronutrients', color: '#2563EB', bgColor: '#EFF6FF', count: 4 },
-  { id: 'biostimulants', label: 'Biostimulants', color: '#0F3D1F', bgColor: '#F0FDF4', count: 3 },
+  {
+    id: 'nutrition',
+    name: 'Zenvi Nutrition Line',
+    teluguName: 'జెన్వీ పోషణ శ్రేణి',
+    short: 'Nutrition',
+    description:
+      'Crop nutrition essentials — bio combos, soil and granule applications, root-zone packs and liquid formulations that support healthy crop growth at every stage.',
+  },
+  {
+    id: 'protection',
+    name: 'Pesticide & Fungicide Line',
+    teluguName: 'క్రిమి & శిలీంధ్ర నాశకాలు',
+    short: 'Protection',
+    description:
+      'A focused crop protection range covering pest and fungal challenges, including combo packs and broad-spectrum solutions for demanding field conditions.',
+  },
+  {
+    id: 'premium',
+    name: 'Premium Crop Care Line',
+    teluguName: 'ప్రీమియం పంట సంరక్షణ',
+    short: 'Premium Care',
+    description:
+      'Our premium tier of crop care products, available in multiple pack sizes for everything from smallholdings to large-acreage field programmes.',
+  },
 ];
 
 export const products = [
+  // ——— Zenvi Nutrition Line ———
   {
-    id: 'block-rock',
-    name: 'Block Rock',
-    formulation: '250ml | Special Insecticide',
-    category: 'insecticides',
-    type: 'Systemic + Contact',
-    crops: ['Chilli', 'Roses', 'Marigold', 'Flowers', 'Vegetables'],
-    description: 'Block Rock is Zenviro\'s flagship product — a premium systemic insecticide specially formulated to eliminate Thrips infestations in chilli and flower crops. With its dual fast-action and long-protection formula, it delivers powerful results within hours of application while providing extended protection for weeks.',
-    dosage: '1-2 ml per litre of water',
-    applicationMethod: 'Foliar spray. Apply in early morning or evening. Repeat after 10-15 days if required.',
-    packSize: '250 ml',
-    problems: ['Thrips (all stages)', 'White flies', 'Aphids', 'Leaf curl virus vectors'],
-    benefits: ['Fast action within 2-4 hours', 'Long-lasting protection up to 3 weeks', 'Safe for beneficial insects when used as directed', 'Higher marketable yield', 'Improved fruit quality and appearance'],
-    imageColor: '#DC2626',
+    id: 'titanic',
+    name: 'Titanic',
+    teluguName: 'టైటానిక్',
+    category: 'nutrition',
+    type: 'BIO',
+    image: titanicImg,
+    variants: [{ size: '250 ml × 2 Combo', price: 1550 }],
     featured: true,
+    description:
+      'A bio combo pack from the Zenvi Nutrition Line, supplied as a twin 250 ml pack for convenient field use.',
   },
   {
-    id: 'imidacloprid-17-8-sl',
-    name: 'Imidacloprid 17.8 SL',
-    formulation: '17.8% SL | Systemic Insecticide',
-    category: 'insecticides',
-    type: 'Systemic',
-    crops: ['Rice', 'Cotton', 'Chilli', 'Wheat', 'Maize', 'Vegetables'],
-    description: 'A highly effective systemic insecticide from the neonicotinoid group that is absorbed by plants and acts on the nervous system of sucking pests. Provides excellent control of sucking insects across a wide range of crops.',
-    dosage: '0.25-0.5 ml per litre of water',
-    applicationMethod: 'Foliar spray or soil drench. Best applied in early morning.',
-    packSize: '100 ml, 250 ml, 500 ml',
-    problems: ['Brown Plant Hopper (BPH)', 'White Backed Plant Hopper', 'Aphids', 'Whiteflies', 'Thrips', 'Jassids'],
-    benefits: ['Systemic action moves through entire plant', 'Long residual activity', 'Effective at low doses', 'Compatible with most pesticides', 'Broad spectrum coverage'],
-    imageColor: '#DC2626',
-    featured: false,
+    id: 'spider',
+    name: 'Spider',
+    teluguName: 'స్పైడర్',
+    category: 'nutrition',
+    type: 'BIO',
+    image: spiderImg,
+    variants: [{ size: '250 ml × 2 Combo', price: 1350 }],
+    featured: true,
+    tagline: 'Plant protector',
+    description:
+      'A bio combo pack positioned as a plant protector, supplied as a twin 250 ml pack in the Zenvi Nutrition Line.',
   },
   {
-    id: 'profenofos-50-ec',
-    name: 'Profenofos 50% EC',
-    formulation: '50% EC | Broad Spectrum Insecticide',
-    category: 'insecticides',
-    type: 'Contact + Systemic',
-    crops: ['Cotton', 'Chilli', 'Vegetables', 'Soybean', 'Groundnut'],
-    description: 'A broad-spectrum organophosphate insecticide with both contact and systemic action. Highly effective against a wide range of chewing and sucking pests, especially on cotton and vegetable crops.',
-    dosage: '2 ml per litre of water',
-    applicationMethod: 'Foliar spray. Apply during early pest infestation stage for best results.',
-    packSize: '250 ml, 500 ml, 1 litre',
-    problems: ['Bollworms', 'Aphids', 'Thrips', 'Mites', 'Jassids', 'Whiteflies', 'Caterpillars'],
-    benefits: ['Broad spectrum activity', 'Quick knockdown effect', 'Effective against resistant strains', 'Works in hot conditions', 'Good ovicidal activity'],
-    imageColor: '#DC2626',
-    featured: false,
+    id: 'zennutri',
+    name: 'Zennutri',
+    teluguName: 'జెన్న్యూట్రి',
+    category: 'nutrition',
+    type: 'SOIL',
+    image: zennutriImg,
+    variants: [{ size: '10 kg', price: 1950 }],
+    featured: true,
+    tagline: 'All-crop nutrition specialist',
+    description:
+      'A 10 kg soil application pack offering complete plant nutrition for all crops at all stages, as described on the product packaging.',
   },
   {
-    id: 'hexaconazole-5-sc',
-    name: 'Hexaconazole 5% SC',
-    formulation: '5% SC | Systemic Fungicide',
-    category: 'fungicides',
-    type: 'Systemic (Triazole)',
-    crops: ['Rice', 'Groundnut', 'Coffee', 'Grapes', 'Mango', 'Wheat'],
-    description: 'A systemic triazole fungicide with broad-spectrum activity against a wide range of fungal diseases. It inhibits ergosterol biosynthesis in fungi, preventing their growth and reproduction. Provides both preventive and curative action.',
-    dosage: '1-2 ml per litre of water',
-    applicationMethod: 'Foliar spray. Apply at first sign of disease. Repeat at 14-day intervals.',
-    packSize: '100 ml, 250 ml, 500 ml',
-    problems: ['Sheath blight (Rice)', 'Leaf spot', 'Powdery mildew', 'Rust', 'Anthracnose', 'Wilt diseases'],
-    benefits: ['Systemic and curative action', 'Long protection period', 'Prevents sporulation', 'Safe to apply at recommended doses', 'Broad spectrum coverage'],
-    imageColor: '#7C3AED',
-    featured: false,
+    id: 'zenvi-max',
+    name: 'Zenvi Max',
+    teluguName: 'జెన్వీ మాక్స్',
+    category: 'nutrition',
+    type: 'GRANULE',
+    image: zenviMaxImg,
+    variants: [
+      { size: '1 kg', price: 750 },
+      { size: '500 g', price: 400 },
+      { size: '250 g', price: 250 },
+    ],
+    featured: true,
+    tagline: 'Micronutrients — foliar spray',
+    description:
+      'A micronutrient granule pack for foliar application, available in three pack sizes to suit different field requirements.',
   },
   {
-    id: 'mancozeb-75-wp',
-    name: 'Mancozeb 75% WP',
-    formulation: '75% WP | Contact Fungicide',
-    category: 'fungicides',
-    type: 'Contact (Dithiocarbamate)',
-    crops: ['Tomato', 'Potato', 'Chilli', 'Grapes', 'Onion', 'Groundnut'],
-    description: 'A contact fungicide with multi-site activity, making it highly effective at preventing disease development and reducing the risk of fungicide resistance. Mancozeb also provides micronutrients (Mn and Zn) as secondary benefits.',
-    dosage: '2-3 grams per litre of water',
-    applicationMethod: 'Foliar spray. Use as a protectant before disease onset. Apply every 7-10 days.',
-    packSize: '250g, 500g, 1kg',
-    problems: ['Early blight', 'Late blight', 'Downy mildew', 'Leaf spot', 'Anthracnose', 'Damping off'],
-    benefits: ['Preventive broad-spectrum protection', 'Multi-site action reduces resistance risk', 'Provides Mn and Zn nutrition', 'Cost effective', 'Safe for most crops'],
-    imageColor: '#7C3AED',
-    featured: false,
+    id: 'zenvi-pro',
+    name: 'Zenvi Pro',
+    teluguName: 'జెన్వీ ప్రో',
+    category: 'nutrition',
+    type: 'GRANULE',
+    image: zenviProImg,
+    variants: [
+      { size: '1 kg', price: 800 },
+      { size: '500 g', price: 450 },
+      { size: '250 g', price: 290 },
+    ],
+    featured: true,
+    tagline: 'Micronutrient fertilizer',
+    description:
+      'A micronutrient fertilizer granule from the Zenvi Nutrition Line, available in 1 kg, 500 g and 250 g packs.',
   },
   {
-    id: 'glyphosate-41-sl',
-    name: 'Glyphosate 41% SL',
-    formulation: '41% SL | Systemic Herbicide',
-    category: 'herbicides',
-    type: 'Non-selective Systemic',
-    crops: ['All crops (non-selective)', 'Orchard floors', 'Field borders', 'Plantation crops'],
-    description: 'A non-selective systemic herbicide that controls a broad spectrum of annual and perennial weeds. Works by inhibiting the EPSP synthase enzyme. Absorbed through leaves and transported throughout the plant including roots.',
-    dosage: '10 ml per litre of water (directed spray)',
-    applicationMethod: 'Directed foliar spray on weeds. Avoid contact with crop plants. Best applied on actively growing weeds.',
-    packSize: '1 litre, 5 litres',
-    problems: ['Annual grasses', 'Perennial grasses', 'Broadleaf weeds', 'Sedges', 'Difficult-to-control weeds'],
-    benefits: ['Effective on most weed species', 'Translocates to roots for complete control', 'Breaks down in soil', 'Saves labor costs', 'No soil residual activity'],
-    imageColor: '#D97706',
+    id: 'zenvi-rhiza',
+    name: 'Zenvi Rhiza',
+    teluguName: 'జెన్వీ రైజా',
+    category: 'nutrition',
+    type: 'ROOT',
+    image: zenviRhizaImg,
+    variants: [{ size: '4 kg', price: 1050 }],
     featured: false,
+    description:
+      'A 4 kg root-zone application pack from the Zenvi Nutrition Line, designed for soil and root-area use.',
   },
   {
-    id: 'pendimethalin-30-ec',
-    name: 'Pendimethalin 30% EC',
-    formulation: '30% EC | Pre-emergence Herbicide',
-    category: 'herbicides',
-    type: 'Pre-emergence',
-    crops: ['Cotton', 'Soybean', 'Maize', 'Groundnut', 'Onion', 'Wheat'],
-    description: 'A pre-emergence herbicide that controls annual grasses and broadleaf weeds before they emerge from soil. Creates a chemical barrier in the top soil layer preventing weed germination and establishment.',
-    dosage: '3-4 ml per litre of water',
-    applicationMethod: 'Soil spray within 2-3 days after sowing/planting. Ensure adequate soil moisture. Do not disturb soil after application.',
-    packSize: '500 ml, 1 litre',
-    problems: ['Annual grasses (pre-emergence)', 'Broadleaf weeds (pre-emergence)', 'Nutsedge', 'Goosegrass', 'Crabgrass'],
-    benefits: ['Pre-emergence action — no weeds to spray', 'Long residual control (6-8 weeks)', 'Reduces weed competition during critical crop period', 'Easy to apply', 'Cost-effective weed management'],
-    imageColor: '#D97706',
-    featured: false,
+    id: 'yieldora',
+    name: 'Yieldora',
+    teluguName: 'యీల్డోరా',
+    category: 'nutrition',
+    type: 'LIQUID',
+    image: yieldoraImg,
+    variants: [
+      { size: '500 ml', price: 850 },
+      { size: '250 ml', price: 500 },
+      { size: '100 ml', price: 350 },
+    ],
+    featured: true,
+    tagline: 'Crop setting & growth',
+    description:
+      'A liquid formulation focused on crop setting and growth support, available in three convenient pack sizes.',
   },
   {
-    id: 'seaweed-extract',
-    name: 'Seaweed Extract',
-    formulation: 'Bio Stimulant | Liquid',
-    category: 'biostimulants',
-    type: 'Bio Stimulant',
-    crops: ['All crops', 'Vegetables', 'Fruits', 'Flowers', 'Field crops'],
-    description: 'Derived from natural seaweed (Ascophyllum nodosum), this bio-stimulant is rich in natural plant hormones (cytokinins, auxins, gibberellins), amino acids, and trace elements. Stimulates natural plant defense and enhances crop quality.',
-    dosage: '2-3 ml per litre of water',
-    applicationMethod: 'Foliar spray or drip irrigation. Apply every 15-20 days throughout crop cycle.',
-    packSize: '250 ml, 500 ml, 1 litre',
-    problems: ['Poor root development', 'Stress from drought/cold/heat', 'Poor fruit setting', 'Low yield potential', 'Weak vegetative growth'],
-    benefits: ['Enhances root development', 'Improves stress tolerance', 'Better fruit setting and size', 'Increases yield quality', 'Activates natural plant immunity'],
-    imageColor: '#0F3D1F',
+    id: 'zenvi-plus',
+    name: 'Zenvi Plus +',
+    teluguName: 'జెన్వీ ప్లస్ +',
+    category: 'nutrition',
+    type: 'LIQUID',
+    image: zenviPlusImg,
+    variants: [{ size: '250 ml', price: 550 }],
     featured: false,
+    tagline: 'Growth & fruit setting specialist',
+    description:
+      'A liquid growth and fruit-setting specialist from the Zenvi Nutrition Line, supplied in a 250 ml pack.',
+  },
+
+  // ——— Pesticide & Fungicide Line ———
+  {
+    id: 'roxcin',
+    name: 'Roxcin',
+    teluguName: 'రాక్సిన్',
+    category: 'protection',
+    type: null,
+    image: roxcinImg,
+    variants: [
+      { size: '1 liter', price: 2750 },
+      { size: '500 ml', price: 1400 },
+      { size: '250 ml', price: 760 },
+    ],
+    featured: true,
+    description:
+      'A crop protection product from the Pesticide & Fungicide Line, available in 1 liter, 500 ml and 250 ml packs.',
   },
   {
-    id: 'npk-19-19-19',
-    name: 'NPK 19:19:19',
-    formulation: '100% Water Soluble Fertilizer',
-    category: 'plant-growth',
-    type: 'Water Soluble NPK',
-    crops: ['All crops', 'Vegetables', 'Fruits', 'Flowers', 'Field crops'],
-    description: 'A fully balanced, 100% water-soluble NPK fertilizer providing equal ratios of Nitrogen, Phosphorus, and Potassium. Ideal for drip irrigation and foliar application. Supports overall crop growth at all stages.',
-    dosage: '5-10 grams per litre of water',
-    applicationMethod: 'Foliar spray or drip fertigation. Apply at vegetative and flowering stages.',
-    packSize: '1 kg, 5 kg, 25 kg',
-    problems: ['Nutrient deficiency', 'Poor vegetative growth', 'Slow establishment', 'Low fruit count', 'Poor rooting'],
-    benefits: ['Completely water soluble — no residue', 'Balanced nutrition for all stages', 'Fast absorption', 'Compatible with drip systems', 'Improves overall crop performance'],
-    imageColor: '#059669',
-    featured: false,
+    id: 'toxxic',
+    name: 'Toxxic',
+    teluguName: 'టాక్సిక్',
+    category: 'protection',
+    type: null,
+    image: toxxicImg,
+    variants: [
+      { size: '1 liter', price: 2950 },
+      { size: '500 ml', price: 1550 },
+      { size: '250 ml', price: 800 },
+    ],
+    featured: true,
+    description:
+      'A crop protection product from the Pesticide & Fungicide Line, available in three pack sizes for flexible use.',
   },
   {
-    id: 'zinc-edta-12',
-    name: 'Zinc EDTA 12%',
-    formulation: '12% Chelated Zinc | Micronutrient',
-    category: 'micronutrients',
-    type: 'Chelated Micronutrient (Zn)',
-    crops: ['Rice', 'Wheat', 'Maize', 'Vegetables', 'Fruits', 'Cotton'],
-    description: 'EDTA-chelated zinc micronutrient for rapid correction of zinc deficiency. Chelation ensures high bioavailability even in alkaline soils where normal zinc fertilizers fail. Essential for enzyme activation and protein synthesis in plants.',
-    dosage: '0.5-1 gram per litre of water',
-    applicationMethod: 'Foliar spray. Apply 2-3 times at 10-day intervals. Can also be used in drip irrigation.',
-    packSize: '250g, 500g, 1 kg',
-    problems: ['Zinc deficiency (yellowing, stunted growth)', 'Khaira disease in rice', 'White bud in maize', 'Poor grain filling', 'Reduced enzyme activity'],
-    benefits: ['Chelated for maximum availability', 'Corrects deficiency quickly', 'Works in alkaline soils', 'Improves grain quality', 'Increases enzymatic activity'],
-    imageColor: '#2563EB',
-    featured: false,
+    id: 'doom-x',
+    name: 'Doom X',
+    teluguName: 'డూమ్ ఎక్స్',
+    category: 'protection',
+    type: null,
+    image: doomXImg,
+    variants: [{ size: '400 ml', price: 1950 }],
+    featured: true,
+    tagline: 'Systemic insecticide — thrips specialist',
+    description:
+      'A systemic insecticide positioned on its packaging as a thrips specialist for long-lasting protection, supplied in a 400 ml pack.',
   },
   {
-    id: 'boron-20',
-    name: 'Boron 20%',
-    formulation: '20% Boron | Micronutrient',
-    category: 'micronutrients',
-    type: 'Micronutrient (B)',
-    crops: ['Cotton', 'Sunflower', 'Groundnut', 'Vegetables', 'Fruits', 'Oilseeds'],
-    description: 'A high-concentration boron micronutrient essential for cell wall formation, pollination, and fruit set. Boron deficiency causes hollow stems, flower drop, and poor fruit development. This product corrects deficiency quickly with foliar application.',
-    dosage: '0.5-1 gram per litre of water',
-    applicationMethod: 'Foliar spray at flower initiation and fruit development stages. Avoid application in hot sun.',
-    packSize: '250g, 500g',
-    problems: ['Boron deficiency (hollow stem, flower drop)', 'Poor pollination and fruit set', 'Distorted young leaves', 'Cracked stems in celery/sunflower', 'Internal browning in fruits'],
-    benefits: ['Essential for pollination success', 'Improves fruit set significantly', 'Strengthens cell walls', 'Better seed development', 'Improves quality of fruits'],
-    imageColor: '#2563EB',
-    featured: false,
+    id: 'tom-jerry',
+    name: 'Tom & Jerry',
+    teluguName: 'టామ్ & జెర్రీ',
+    category: 'protection',
+    type: 'COMBO',
+    image: tomJerryImg,
+    variants: [{ size: '100 ml × 3 Combo', price: 1950 }],
+    featured: true,
+    tagline: 'All-in-one pest solution',
+    description:
+      'A broad-spectrum insecticide combo described on its packaging as an all-in-one pest solution, supplied as a triple 100 ml pack.',
   },
   {
-    id: 'ferro-eddha-6',
-    name: 'Ferro EDDHA 6%',
-    formulation: '6% EDDHA Iron | Micronutrient',
-    category: 'micronutrients',
-    type: 'Chelated Micronutrient (Fe)',
-    crops: ['Citrus', 'Grapes', 'Groundnut', 'Vegetables', 'Fruit trees', 'Ornamentals'],
-    description: 'EDDHA-chelated iron fertilizer that remains stable and available even in highly alkaline and calcareous soils. The EDDHA chelate is the most stable iron chelate available, providing reliable iron nutrition where other sources fail.',
-    dosage: '0.5-1 gram per litre of water (foliar) or 50-100g per tree (soil)',
-    applicationMethod: 'Foliar spray or soil application. For severe deficiency, combine both methods.',
-    packSize: '250g, 1 kg',
-    problems: ['Iron chlorosis (yellowing between veins)', 'Interveinal yellowing in young leaves', 'Stunted growth in alkaline soils', 'Poor fruit color development', 'Iron deficiency in calcareous soils'],
-    benefits: ['Most stable chelate for alkaline soils', 'Rapid correction of iron chlorosis', 'Works where other iron fertilizers fail', 'Improves photosynthesis efficiency', 'Better fruit color development'],
-    imageColor: '#2563EB',
+    id: 'revox',
+    name: 'Revox',
+    teluguName: 'రెవాక్స్',
+    category: 'protection',
+    type: null,
+    image: revoxImg,
+    variants: [{ size: '180 ml', price: 1550 }],
     featured: false,
+    tagline: 'Systemic insecticide',
+    description:
+      'A systemic insecticide for broad-spectrum control of sucking pests, as described on the product packaging. Supplied in a 180 ml pack.',
   },
   {
-    id: 'magnesium-sulphate-9-6',
-    name: 'Magnesium Sulphate 9.6%',
-    formulation: '9.6% Mg | Micronutrient',
-    category: 'micronutrients',
-    type: 'Micronutrient (Mg)',
-    crops: ['All crops', 'Vegetables', 'Fruits', 'Plantation crops', 'Field crops'],
-    description: 'A highly soluble source of magnesium and sulfur. Magnesium is the central atom of chlorophyll — critical for photosynthesis. Sulfur is essential for protein and amino acid synthesis. This product addresses both deficiencies efficiently.',
-    dosage: '5-10 grams per litre of water',
-    applicationMethod: 'Foliar spray or soil application. Apply at vegetative stages. Can be combined with most fertilizers.',
-    packSize: '1 kg, 5 kg, 25 kg',
-    problems: ['Magnesium deficiency (interveinal chlorosis)', 'Sulfur deficiency (yellowing of young leaves)', 'Poor chlorophyll development', 'Reduced photosynthesis', 'Low protein content in grains'],
-    benefits: ['Enhances chlorophyll production', 'Improves photosynthesis', 'Provides both Mg and S', 'Cost-effective source of nutrients', 'Increases sugar content in fruits'],
-    imageColor: '#2563EB',
+    id: 'redox',
+    name: 'Redox',
+    teluguName: 'రెడాక్స్',
+    category: 'protection',
+    type: null,
+    image: redoxImg,
+    variants: [{ size: '250 ml', price: 2100 }],
     featured: false,
+    tagline: 'Systemic insecticide',
+    description:
+      'A systemic insecticide for broad-spectrum control of sucking pests, as described on the product packaging. Supplied in a 250 ml pack.',
   },
   {
-    id: 'amino-power',
-    name: 'Amino Power',
-    formulation: 'Amino Acid Bio Stimulant | Liquid',
-    category: 'biostimulants',
-    type: 'Bio Stimulant',
-    crops: ['All crops', 'Vegetables', 'Fruits', 'Flowers', 'Field crops'],
-    description: 'A concentrated blend of free-form amino acids derived from plant protein hydrolysis. Amino acids are the building blocks of proteins and play crucial roles in enzyme function, stress resistance, and nutrient uptake. Amino Power turbocharges crop metabolism.',
-    dosage: '2-3 ml per litre of water',
-    applicationMethod: 'Foliar spray or drip irrigation. Apply at critical growth stages: vegetative, flowering, fruit development.',
-    packSize: '250 ml, 500 ml, 1 litre',
-    problems: ['Slow growth and development', 'Poor stress recovery', 'Low nutrient use efficiency', 'Weak cell structure', 'Poor protein synthesis'],
-    benefits: ['Ready-to-use amino acids for instant absorption', 'Improves stress tolerance', 'Enhances enzyme activity', 'Better pollen viability', 'Increases crop quality and yield'],
-    imageColor: '#0F3D1F',
+    id: 'black-roock',
+    name: 'Black Roock',
+    teluguName: 'బ్లాక్ రూక్',
+    category: 'protection',
+    type: null,
+    image: blackRoockImg,
+    variants: [{ size: '440 ml', price: 3100 }],
     featured: false,
+    tagline: 'Systemic insecticide',
+    description:
+      'A premium systemic insecticide for broad-spectrum control of sucking pests, supplied in a distinctive 440 ml pack.',
   },
   {
-    id: 'humic-power',
-    name: 'Humic Power',
-    formulation: 'Humic Acid Bio Stimulant | Liquid',
-    category: 'biostimulants',
-    type: 'Bio Stimulant',
-    crops: ['All crops', 'Field crops', 'Vegetables', 'Fruits', 'Plantation crops'],
-    description: 'High-quality humic acid derived from leonardite that improves soil structure, enhances nutrient availability, and stimulates beneficial microbial activity. Works synergistically with fertilizers to improve their efficiency.',
-    dosage: '3-5 ml per litre of water',
-    applicationMethod: 'Soil drench or drip irrigation. Apply 7-10 days before transplanting and at key growth stages.',
-    packSize: '500 ml, 1 litre',
-    problems: ['Poor soil structure and compaction', 'Low fertilizer efficiency', 'Poor water retention', 'Low microbial activity', 'Nutrient lockup in soil'],
-    benefits: ['Improves soil structure and aeration', 'Increases fertilizer efficiency by 30%', 'Better water and nutrient retention', 'Stimulates beneficial microbes', 'Enhances root development'],
-    imageColor: '#0F3D1F',
+    id: 'rang-rover',
+    name: 'Rang Rover',
+    teluguName: 'రంగ్ రోవర్',
+    category: 'protection',
+    type: null,
+    image: rangRoverImg,
+    variants: [{ size: '250 ml', price: 1900 }],
     featured: false,
+    tagline: 'All-pest control solution',
+    description:
+      'A systemic insecticide positioned on its packaging as an all-pest control solution, supplied in a 250 ml pack.',
   },
   {
-    id: 'fulvic-power',
-    name: 'Fulvic Power',
-    formulation: 'Fulvic Acid Bio Stimulant | Liquid',
-    category: 'biostimulants',
-    type: 'Bio Stimulant',
-    crops: ['All crops', 'Vegetables', 'Fruits', 'Flowers', 'High-value crops'],
-    description: 'Concentrated fulvic acid — the smallest and most biologically active fraction of humic substances. Fulvic acid has the unique ability to chelate nutrients and transport them directly into plant cells, dramatically improving nutrient absorption efficiency.',
-    dosage: '1-2 ml per litre of water',
-    applicationMethod: 'Foliar spray or soil drench. Can be mixed with most fertilizers and pesticides. Apply every 10-15 days.',
-    packSize: '250 ml, 500 ml',
-    problems: ['Poor nutrient uptake', 'Nutrient deficiency despite fertilization', 'Reduced photosynthesis', 'Slow stress recovery', 'Low sugar and quality'],
-    benefits: ['Chelates and transports nutrients into cells', 'Increases nutrient absorption efficiency', 'Enhances root cell permeability', 'Improves Brix (sugar) levels in fruits', 'Works synergistically with all fertilizers'],
-    imageColor: '#0F3D1F',
+    id: 'lenin',
+    name: 'Lenin',
+    teluguName: 'లెనిన్',
+    category: 'protection',
+    type: null,
+    image: leninImg,
+    variants: [{ size: '240 ml × 2', price: 1600 }],
     featured: false,
+    description:
+      'A crop protection combo from the Pesticide & Fungicide Line, supplied as a twin 240 ml pack.',
+  },
+
+  // ——— Premium Crop Care Line ———
+  {
+    id: 'terminal',
+    name: 'Terminal',
+    teluguName: 'టెర్మినల్',
+    category: 'premium',
+    type: null,
+    image: terminalImg,
+    variants: [
+      { size: '1 liter', price: 2700 },
+      { size: '500 ml', price: 1400 },
+      { size: '250 ml', price: 712 },
+    ],
+    featured: true,
+    tagline: 'Plant protector',
+    description:
+      'A premium plant protector from the Premium Crop Care Line, available in 1 liter, 500 ml and 250 ml packs.',
+  },
+  {
+    id: 'inflowis',
+    name: 'Inflowis',
+    teluguName: 'ఇన్ఫ్లోవిస్',
+    category: 'premium',
+    type: null,
+    image: inflowisImg,
+    variants: [
+      { size: '1 liter', price: 2950 },
+      { size: '500 ml', price: 1500 },
+      { size: '250 ml', price: 772 },
+    ],
+    featured: true,
+    description:
+      'A premium crop care product available in three pack sizes, part of the chilli and cotton focus range in our catalog.',
+  },
+  {
+    id: 'invidea',
+    name: 'Invidea',
+    teluguName: 'ఇన్విడియా',
+    category: 'premium',
+    type: null,
+    image: invideaImg,
+    variants: [
+      { size: '1 liter', price: 3200 },
+      { size: '500 ml', price: 1650 },
+      { size: '250 ml', price: 900 },
+    ],
+    featured: true,
+    description:
+      'A premium crop care product available in three pack sizes, part of the chilli and cotton focus range in our catalog.',
+  },
+  {
+    id: 'exozen',
+    name: 'Exozen',
+    teluguName: 'ఎక్సోజెన్',
+    category: 'premium',
+    type: null,
+    image: exozenImg,
+    variants: [
+      { size: '1 liter', price: 3100 },
+      { size: '500 ml', price: 1600 },
+      { size: '250 ml', price: 850 },
+    ],
+    featured: true,
+    tagline: 'Plant protector',
+    description:
+      'A premium plant protector featured in our chilli special range, available in 1 liter, 500 ml and 250 ml packs.',
+  },
+  {
+    id: 'predator',
+    name: 'Predator',
+    teluguName: 'ప్రిడేటర్',
+    category: 'premium',
+    type: null,
+    image: predatorImg,
+    variants: [
+      { size: '1 liter', price: 3100 },
+      { size: '500 ml', price: 1600 },
+      { size: '250 ml', price: 850 },
+    ],
+    featured: true,
+    description:
+      'A premium crop care product featured in our chilli special range, available in three pack sizes.',
   },
 ];
 
-export const getProductById = (id) => products.find(p => p.id === id);
-export const getProductsByCategory = (cat) => products.filter(p => p.category === cat);
-export const getRelatedProducts = (product, limit = 3) =>
-  products.filter(p => p.category === product.category && p.id !== product.id).slice(0, limit);
+// Shown in the catalog gallery only — no published pricing. Contact for details.
+export const catalogOnlyProducts = [
+  { id: 'boron-20', name: 'Boron 20%', label: 'Micronutrient', image: boronImg },
+  { id: 'zinc-edta-12', name: 'Zinc EDTA 12%', label: 'Micronutrient', image: zincImg },
+  { id: 'ferro-eddha-6', name: 'Ferro EDDHA 6%', label: 'Micronutrient', image: ferroImg },
+  { id: 'magnesium-sulphate', name: 'Magnesium Sulphate 9.6%', label: 'Micronutrient', image: magnesiumImg },
+  { id: 'fulvic-power', name: 'Fulvic Power', label: 'Biostimulant', image: fulvicImg },
+  { id: 'amino-power', name: 'Amino Power', label: 'Biostimulant', image: aminoImg },
+  { id: 'seaweed-extract', name: 'Seaweed Extract', label: 'Biostimulant', image: seaweedImg },
+  { id: 'humic-power', name: 'Humic Power', label: 'Biostimulant', image: humicImg },
+  { id: 'roottex', name: 'Roottex', label: 'Systemic fungicide', image: roottexImg },
+  { id: 'terando', name: 'Terando', label: 'Systemic larvicide', image: terandoImg },
+  { id: 'pushpa-2', name: 'Pushpa 2', label: 'Plant growth regulator', image: pushpaImg },
+];
+
+export const formatINR = (n) => `₹${n.toLocaleString('en-IN')}`;
+
+export const startingPrice = (product) =>
+  Math.min(...product.variants.map((v) => v.price));
+
+export const getProductById = (id) => products.find((p) => p.id === id);
+
+export const getCategoryById = (id) => categories.find((c) => c.id === id);
+
+export const getProductsByCategory = (categoryId) =>
+  products.filter((p) => p.category === categoryId);
+
+export const getRelatedProducts = (product, limit = 4) =>
+  products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, limit);
+
+export const featuredProducts = products.filter((p) => p.featured);

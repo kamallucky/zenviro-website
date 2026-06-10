@@ -1,320 +1,191 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  MapPin, Phone, Leaf, Award, Target, ShieldCheck, TrendingUp, Globe,
-  HandHeart, Users, Package, ArrowRight, MessageCircle, Sparkles,
-  ShieldAlert, Hand, Baby, Ban, Recycle,
+  ShieldCheck, BookOpenCheck, Warehouse, Scale, PhoneCall, Sprout,
+  FileText, Phone, MessageCircle, Mail, MapPin, ArrowRight,
 } from 'lucide-react';
-import TelanganaSection from '../components/TelanganaSection';
+import Seo from '../components/Seo';
+import Reveal from '../components/Reveal';
+import SectionHeader from '../components/SectionHeader';
+import { COMPANY, DISCLAIMERS, telHref, mailHref, waHref, mapsHref } from '../config/company';
+import { useLang } from '../i18n';
+import cropsCollage from '../assets/catalog/crops-collage.webp';
 
-const values = [
-  { Icon: Award, title: 'Highest Quality', desc: 'Every product undergoes rigorous quality testing to ensure consistent performance every time you spray.' },
-  { Icon: Target, title: 'Reliable Results', desc: 'Proven performance in Telangana\'s diverse soil types and crop conditions, season after season.' },
-  { Icon: ShieldCheck, title: 'Complete Protection', desc: 'From pest control to precision nutrition — we cover every aspect of your crop\'s health journey.' },
-  { Icon: TrendingUp, title: 'Higher Yield', desc: 'Our formulations are designed to maximize your marketable yield while minimizing input costs.' },
-  { Icon: HandHeart, title: 'Farmer First', desc: 'Every decision we make starts with one question: How does this help the farmer succeed?' },
-  { Icon: Globe, title: 'Eco-Responsible', desc: 'We believe crop protection and environmental stewardship can coexist — and we prove it every day.' },
-];
-
-const safetyItems = [
-  { Icon: ShieldAlert, title: 'Read the Label', desc: 'Always read complete label instructions before use. Follow recommended doses precisely.' },
-  { Icon: Hand, title: 'Wear PPE', desc: 'Gloves, mask, and protective clothing are mandatory during every application.' },
-  { Icon: Baby, title: 'Keep from Children', desc: 'Store in locked, cool, dry location — always away from children and food storage.' },
-  { Icon: Ban, title: 'No Eating', desc: 'Never eat, drink, or smoke while handling agro chemicals of any kind.' },
-  { Icon: Recycle, title: 'Dispose Properly', desc: 'Triple-rinse containers and dispose as per local Telangana guidelines responsibly.' },
-];
-
-const journey = [
-  {
-    year: 'Mission',
-    title: 'Quality Without Compromise',
-    desc: 'Source the best raw materials. Manufacture to international standards. Test rigorously at every step. This is non-negotiable.',
-  },
-  {
-    year: 'Promise',
-    title: 'Expert Support, Always',
-    desc: 'When you buy Zenviro, our crop advisors become your team. Free guidance on dosage, timing, and crop care — just a call away.',
-  },
-  {
-    year: 'Vision',
-    title: 'Prosperity for Every Farmer',
-    desc: 'A Telangana where every farmer has the knowledge and tools to maximize crop potential — sustainably, safely, and profitably.',
-  },
+const SAFETY_POINTS = [
+  { Icon: BookOpenCheck, title: 'Read the label first', text: 'Always read and follow product label instructions before any use.' },
+  { Icon: ShieldCheck, title: 'Use safety practices', text: 'Follow recommended protective practices whenever handling crop protection products.' },
+  { Icon: Warehouse, title: 'Store responsibly', text: 'Keep products safely stored, away from children, food and animal feed.' },
+  { Icon: Scale, title: 'Follow regulations', text: 'Use products in accordance with applicable local agricultural regulations.' },
+  { Icon: PhoneCall, title: 'Ask for guidance', text: 'Contact our team or local agricultural experts whenever you are unsure.' },
+  { Icon: Sprout, title: 'Protect your fields', text: 'Responsible usage protects your crops, your soil and the people who work your land.' },
 ];
 
 export default function About() {
+  const { t } = useLang();
   return (
-    <div style={{ background: 'var(--cream)' }}>
-      {/* HERO */}
-      <section style={{ background: 'var(--green-deep)' }} className="pt-32 pb-24 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 50% 70% at 100% 50%, rgba(99,153,34,0.12) 0%, transparent 60%)' }} />
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 40% 50% at 0% 100%, rgba(239,159,39,0.08) 0%, transparent 60%)' }} />
-        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <pattern id="about-field" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse" patternTransform="rotate(22)">
-              <line x1="0" y1="0" x2="0" y2="80" stroke="rgba(255,255,255,0.05)" strokeWidth="1.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#about-field)"/>
-        </svg>
+    <>
+      <Seo
+        title="About Us | Zenviro Agro Chemicals"
+        description="Zenviro Agro Chemicals — trusted agricultural nutrition and crop protection products for modern farming, manufactured and marketed from Hyderabad, Telangana. GST 36AAEFZ3738JIZQ."
+        path="/about"
+      />
 
-        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-6"
-              style={{ background: 'rgba(239,159,39,0.15)', color: 'var(--gold)', border: '1px solid rgba(239,159,39,0.25)' }}>
-              <Sparkles size={12} />
-              Our Story
-            </div>
-            <h1 className="font-display font-bold text-white leading-[1.02] mb-8"
-              style={{ fontSize: 'clamp(40px, 6vw, 80px)', letterSpacing: '-0.025em', maxWidth: '900px' }}>
-              Grown in Telangana.
-              <br />
-              <span style={{ color: 'var(--gold)' }}>Built for Telangana Farmers.</span>
+      <section className="relative overflow-hidden bg-forest-dark text-cream">
+        <div aria-hidden="true" className="absolute inset-0">
+          <img src={cropsCollage} alt="" className="h-full w-full object-cover opacity-15" />
+          <div className="absolute inset-0 bg-linear-to-r from-forest-dark via-forest-dark/90 to-forest/70" />
+        </div>
+        <div className="container-site relative py-20 sm:py-24">
+          <Reveal>
+            <p className="eyebrow !text-gold-soft mb-4">{t('about')}</p>
+            <h1 className="max-w-3xl text-3xl font-extrabold sm:text-4xl lg:text-5xl lg:leading-[1.1]">
+              {COMPANY.slogan}
             </h1>
-            <p className="text-lg lg:text-xl leading-relaxed max-w-2xl"
-              style={{ color: 'rgba(255,255,255,0.78)', lineHeight: 1.75 }}>
-              Zenviro Agro Chemicals was founded with one mission: to give every farmer in Telangana access to premium-grade crop protection and nutrition products — at honest prices, with local expertise.
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-cream/80 sm:text-lg">
+              {COMPANY.name} is focused on trusted agricultural nutrition and crop protection
+              products for modern farming needs. With a practical product range across nutrition,
+              pesticide, fungicide and premium crop care lines, the company supports farmers,
+              dealers and distributors with clear product information, responsible guidance and
+              reliable contact support.
             </p>
-          </motion.div>
+          </Reveal>
         </div>
       </section>
 
-      {/* JOURNEY / STORY */}
-      <section className="py-28 lg:py-36">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <span className="inline-block px-4 py-2 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-6"
-                style={{ background: 'rgba(99,153,34,0.12)', color: 'var(--green-leaf)' }}>
-                Who We Are
-              </span>
-              <h2 className="font-display font-bold leading-[1.05] mb-8"
-                style={{ fontSize: 'clamp(36px, 5vw, 56px)', color: 'var(--green-deep)', letterSpacing: '-0.025em' }}>
-                Your Local Partner for Crop Success
-              </h2>
-              <div className="space-y-5 text-lg leading-relaxed" style={{ color: 'var(--ink-soft)', lineHeight: 1.8 }}>
-                <p>
-                  Based in Injapur, Rangareddy, Hyderabad, Zenviro Agro Chemicals understands the challenges facing Telangana farmers — the unpredictable monsoon, the diverse pest pressures, and the relentless pressure to maximize yields each season.
-                </p>
-                <p>
-                  Our product range spans <span className="font-semibold" style={{ color: 'var(--green-deep)' }}>insecticides, fungicides, herbicides, plant growth regulators, micronutrients, and biostimulants</span> — all carefully sourced and quality-tested to meet the demands of modern farming.
-                </p>
-                <p>
-                  What makes us different is our commitment to local support. We don't just sell products — we help you understand what your crop needs and when.
-                </p>
-              </div>
-
-              <div className="mt-10 flex flex-wrap gap-4">
-                <Link to="/products" className="btn-gold flex items-center gap-2 px-7 py-4 rounded-2xl text-sm">
-                  See Our Products <ArrowRight size={16} />
-                </Link>
-                <Link to="/contact" className="flex items-center gap-2 px-7 py-4 rounded-2xl text-sm font-bold transition-all hover:-translate-y-0.5"
-                  style={{ border: '2px solid var(--green-mid)', color: 'var(--green-mid)' }}>
-                  Talk to Our Team
-                </Link>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="space-y-5"
-            >
-              {journey.map((item, i) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 }}
-                  className="p-7 rounded-3xl"
-                  style={{
-                    background: i === 0 ? 'linear-gradient(135deg, #F0FDF4, #FFFFFF)' :
-                               i === 1 ? 'linear-gradient(135deg, #FFFBEB, #FFFFFF)' :
-                                         'linear-gradient(135deg, #F5F3FF, #FFFFFF)',
-                    border: `1.5px solid ${i === 0 ? '#BBF7D0' : i === 1 ? '#FDE68A' : '#DDD6FE'}`,
-                    boxShadow: '0 4px 24px rgba(15,61,31,0.05)',
-                  }}
+      <section className="section bg-cream">
+        <div className="container-site grid gap-6 sm:grid-cols-3">
+          {[
+            { label: 'Manufactured & Marketed By', value: COMPANY.name, sub: COMPANY.address.full },
+            { label: 'GST Number', value: COMPANY.gst, sub: 'Registered in Telangana, India' },
+            { label: 'Positioning', value: 'Trusted Agricultural Nutrition & Crop Protection', sub: COMPANY.taglineTelugu, subTelugu: true },
+          ].map((item, i) => (
+            <Reveal key={item.label} delay={i * 0.08} className="h-full">
+              <div className="card h-full p-7">
+                <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-ink-soft">{item.label}</p>
+                <p className="mt-3 font-display text-lg font-extrabold leading-snug text-forest-dark">{item.value}</p>
+                <p
+                  lang={item.subTelugu ? 'te' : undefined}
+                  className={`mt-2 text-sm text-ink-soft ${item.subTelugu ? 'font-telugu' : ''}`}
                 >
-                  <span className="text-xs font-bold uppercase tracking-[0.2em]"
-                    style={{ color: i === 0 ? 'var(--green-mid)' : i === 1 ? 'var(--gold)' : '#7C3AED' }}>
-                    {item.year}
+                  {item.sub}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <section id="safety" className="section scroll-mt-24 bg-charcoal text-cream">
+        <div className="container-site">
+          <SectionHeader
+            dark
+            eyebrow="Safety & Responsible Usage"
+            title="Crop protection works best when it is used responsibly"
+            lead={DISCLAIMERS.safety}
+          />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {SAFETY_POINTS.map(({ Icon, title, text }, i) => (
+              <Reveal key={title} delay={(i % 3) * 0.08} className="h-full">
+                <article className="h-full rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition-colors hover:border-gold/30 hover:bg-white/8">
+                  <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gold/15 text-gold-soft ring-1 ring-gold/25">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
-                  <h4 className="font-display font-bold text-xl mt-2 mb-3" style={{ color: 'var(--green-deep)', letterSpacing: '-0.01em' }}>
-                    {item.title}
-                  </h4>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-soft)', lineHeight: 1.7 }}>
-                    {item.desc}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section style={{ background: 'var(--green-deep)' }} className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 50% 50% at 50% 100%, rgba(239,159,39,0.1) 0%, transparent 60%)' }} />
-        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
-            {[
-              { Icon: Users, value: '500+', label: 'Farmers Served' },
-              { Icon: Package, value: '16+', label: 'Premium Products' },
-              { Icon: Leaf, value: '6', label: 'Categories' },
-              { Icon: MapPin, value: '10', label: 'Districts Reached' },
-            ].map(({ Icon, value, label }) => (
-              <motion.div
-                key={label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="flex flex-col items-center gap-3"
-              >
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{ background: 'rgba(239,159,39,0.15)', border: '1px solid rgba(239,159,39,0.2)' }}>
-                  <Icon size={26} style={{ color: 'var(--gold)' }} />
-                </div>
-                <div className="font-display font-bold text-white" style={{ fontSize: '2.75rem', lineHeight: 1, letterSpacing: '-0.02em' }}>
-                  {value}
-                </div>
-                <div className="text-sm" style={{ color: 'rgba(255,255,255,0.65)' }}>{label}</div>
-              </motion.div>
+                  <h3 className="mb-2 text-base font-extrabold">{title}</h3>
+                  <p className="text-sm leading-relaxed text-cream/65">{text}</p>
+                </article>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* VALUES */}
-      <section className="py-28 lg:py-36" style={{ background: 'var(--cream)' }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20 max-w-3xl mx-auto"
-          >
-            <span className="inline-block px-4 py-2 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-6"
-              style={{ background: 'rgba(99,153,34,0.12)', color: 'var(--green-leaf)' }}>
-              Our Values
-            </span>
-            <h2 className="font-display font-bold mb-6"
-              style={{ fontSize: 'clamp(36px, 5vw, 56px)', color: 'var(--green-deep)', letterSpacing: '-0.025em', lineHeight: 1.1 }}>
-              The Principles That Guide Us
-            </h2>
-            <p className="text-lg sm:text-xl" style={{ color: 'var(--ink-soft)', lineHeight: 1.7 }}>
-              Six commitments we live by — to our farmers, our products, and our planet.
-            </p>
-          </motion.div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
-            {values.map((v, i) => (
-              <motion.div
-                key={v.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="value-card bg-white rounded-3xl p-8"
-                style={{ border: '1.5px solid transparent', boxShadow: '0 4px 24px rgba(15,61,31,0.05)' }}
-              >
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-                  style={{ background: 'rgba(26,92,42,0.08)' }}>
-                  <v.Icon size={26} style={{ color: 'var(--green-mid)' }} />
-                </div>
-                <h3 className="font-display font-bold text-xl mb-3" style={{ color: 'var(--green-deep)', letterSpacing: '-0.01em' }}>{v.title}</h3>
-                <p className="text-[15px] leading-relaxed" style={{ color: 'var(--ink-soft)', lineHeight: 1.7 }}>{v.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TELANGANA MAP SECTION */}
-      <TelanganaSection />
-
-      {/* SAFETY GUIDELINES */}
-      <section id="safety" className="py-28 lg:py-32" style={{ background: 'var(--cream-dark)' }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16 max-w-2xl mx-auto"
-          >
-            <span className="inline-block px-4 py-2 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-6"
-              style={{ background: 'rgba(239,159,39,0.15)', color: '#D97706' }}>
-              Safe Usage
-            </span>
-            <h2 className="font-display font-bold mb-5"
-              style={{ fontSize: 'clamp(32px, 4.5vw, 48px)', color: 'var(--green-deep)', letterSpacing: '-0.025em', lineHeight: 1.1 }}>
-              Safety Guidelines
-            </h2>
-            <p className="text-base sm:text-lg" style={{ color: 'var(--ink-soft)', lineHeight: 1.7 }}>
-              We are committed to safe use of agro chemicals. Follow these guidelines on every application.
-            </p>
-          </motion.div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
-            {safetyItems.map((item, i) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                className="safety-card bg-white rounded-2xl p-7 text-center"
-                style={{ boxShadow: '0 4px 20px rgba(15,61,31,0.05)' }}
-              >
-                <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-                  style={{ background: 'rgba(239,159,39,0.12)' }}>
-                  <item.Icon size={24} style={{ color: 'var(--gold)' }} />
-                </div>
-                <h4 className="font-display font-bold text-base mb-3" style={{ color: 'var(--green-deep)' }}>{item.title}</h4>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--ink-soft)' }}>{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-24" style={{ background: 'var(--green-mid)' }}>
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <h2 className="font-display font-bold text-white"
-              style={{ fontSize: 'clamp(32px, 4.5vw, 52px)', letterSpacing: '-0.025em', lineHeight: 1.1 }}>
-              Visit Our Facility
-            </h2>
-            <p className="mt-5 text-lg sm:text-xl text-white/80" style={{ lineHeight: 1.6 }}>
-              Drop by our Injapur facility, or just give us a call. We love meeting farmers.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center mt-10">
-              <a
-                href="https://wa.me/919347959693?text=Hi%2C%20I%27d%20like%20to%20visit%20Zenviro%20Agro%20Chemicals"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-semibold text-white transition-all hover:-translate-y-0.5"
-                style={{ background: '#25D366', boxShadow: '0 6px 16px rgba(37,211,102,0.35)' }}
-              >
-                <MessageCircle size={18} />
-                WhatsApp Us
-              </a>
-              <a href="tel:+919347959693"
-                className="btn-gold flex items-center gap-2 px-8 py-4 rounded-2xl text-base font-semibold">
-                <Phone size={18} />
-                +91 93479 59693
-              </a>
+      <section id="documents" className="section scroll-mt-24 bg-mist">
+        <div className="container-site">
+          <SectionHeader
+            eyebrow="Documentation"
+            title="Product labels & safety documents"
+            lead="For product labels, usage guidance, and safety documentation, please contact Zenviro Agro Chemicals — our team will share the relevant information for each product."
+          />
+          <Reveal className="mx-auto max-w-2xl">
+            <div className="card flex flex-col items-center gap-6 p-10 text-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-forest/8 text-forest ring-1 ring-forest/15">
+                <FileText className="h-8 w-8" aria-hidden="true" />
+              </span>
+              <p className="text-sm leading-relaxed text-ink-soft">
+                We do not publish dosage, composition or application instructions on this website.
+                Always rely on the official product label and professional guidance.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <a href={telHref()} className="btn-primary !py-2.5" data-analytics="contact-sales">
+                  <Phone className="h-4 w-4" aria-hidden="true" />
+                  {t('callNow')}
+                </a>
+                <a
+                  href={waHref(`Hi ${COMPANY.name}, I would like product label / safety documentation details.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn bg-[#1faf57] !py-2.5 text-white hover:bg-[#178a45]"
+                  data-analytics="whatsapp-product-enquiry"
+                >
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                  {t('whatsapp')}
+                </a>
+                <a href={mailHref('Product label / safety documentation request')} className="btn-outline !py-2.5">
+                  <Mail className="h-4 w-4" aria-hidden="true" />
+                  Email Us
+                </a>
+              </div>
             </div>
-          </motion.div>
+          </Reveal>
         </div>
       </section>
-    </div>
+
+      <section className="section bg-cream !pt-0">
+        <div className="container-site">
+          <Reveal className="overflow-hidden rounded-3xl border border-line/80 bg-white shadow-(--shadow-card)">
+            <div className="grid lg:grid-cols-[1fr_1fr]">
+              <div className="flex flex-col justify-center gap-5 p-8 sm:p-12">
+                <h2 className="text-2xl font-extrabold text-forest-dark sm:text-3xl">Visit us</h2>
+                <address className="flex flex-col gap-3 text-sm not-italic text-ink-soft">
+                  <span className="flex items-start gap-3">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-leaf" aria-hidden="true" />
+                    <span>
+                      <strong className="text-ink">{COMPANY.name}</strong>
+                      <br />
+                      {COMPANY.address.line1},<br />
+                      {COMPANY.address.line2}
+                    </span>
+                  </span>
+                  <span className="flex items-center gap-3">
+                    <Phone className="h-4 w-4 shrink-0 text-leaf" aria-hidden="true" />
+                    <span>{COMPANY.phones.join(', ')}</span>
+                  </span>
+                  <span className="flex items-center gap-3">
+                    <Mail className="h-4 w-4 shrink-0 text-leaf" aria-hidden="true" />
+                    {COMPANY.email}
+                  </span>
+                </address>
+                <div className="flex flex-wrap gap-3">
+                  <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="btn-outline !py-2.5">
+                    Open in Google Maps
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                  <Link to="/contact" className="btn-primary !py-2.5">
+                    {t('contact')}
+                  </Link>
+                </div>
+              </div>
+              <iframe
+                title="Zenviro Agro Chemicals location map"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(COMPANY.address.full)}&output=embed`}
+                className="h-72 w-full border-0 lg:h-full"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          </Reveal>
+        </div>
+      </section>
+    </>
   );
 }

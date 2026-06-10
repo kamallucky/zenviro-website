@@ -1,296 +1,192 @@
-import { useParams, Link } from 'react-router-dom';
+import { useMemo } from 'react';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  ChevronRight, MessageCircle, Phone, CheckCircle, XCircle,
-  AlertTriangle, Droplet, Layers, Crop, Beaker,
-} from 'lucide-react';
-import { getProductById, getRelatedProducts } from '../data/products';
+import { ChevronRight, Phone, MessageCircle, ShieldCheck, Send } from 'lucide-react';
+import Seo from '../components/Seo';
+import Reveal from '../components/Reveal';
 import ProductCard from '../components/ProductCard';
-import ProductBottle from '../components/ProductBottle';
-
-const categoryColors = {
-  insecticides: { color: '#DC2626', bg: '#FEF2F2', border: '#FECACA', soft: '#FFF7F7' },
-  fungicides: { color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE', soft: '#FAFAFF' },
-  herbicides: { color: '#D97706', bg: '#FFFBEB', border: '#FDE68A', soft: '#FFFCF0' },
-  'plant-growth': { color: '#059669', bg: '#ECFDF5', border: '#A7F3D0', soft: '#F4FDF8' },
-  micronutrients: { color: '#2563EB', bg: '#EFF6FF', border: '#BFDBFE', soft: '#F5F9FF' },
-  biostimulants: { color: '#0F3D1F', bg: '#F0FDF4', border: '#BBF7D0', soft: '#F6FDF8' },
-};
-
-const categoryLabels = {
-  insecticides: 'Insecticide', fungicides: 'Fungicide', herbicides: 'Herbicide',
-  'plant-growth': 'Plant Growth', micronutrients: 'Micronutrient', biostimulants: 'Biostimulant',
-};
+import {
+  getProductById, getCategoryById, getRelatedProducts, formatINR,
+} from '../data/products';
+import { COMPANY, DISCLAIMERS, SITE_URL, telHref, waHref, waProductMessage } from '../config/company';
+import { useLang } from '../i18n';
 
 export default function ProductDetail() {
+  const { t } = useLang();
   const { id } = useParams();
   const product = getProductById(id);
 
-  if (!product) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center pt-20" style={{ background: 'var(--cream)' }}>
-        <h1 className="font-display text-4xl font-bold mb-6" style={{ color: 'var(--green-deep)' }}>Product not found</h1>
-        <Link to="/products" className="btn-gold px-7 py-3.5 rounded-xl text-sm">Back to Products</Link>
-      </div>
-    );
-  }
+  const jsonLd = useMemo(() => {
+    if (!product) return null;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name,
+      description: product.description,
+      brand: { '@type': 'Brand', name: COMPANY.name },
+      category: getCategoryById(product.category)?.name,
+      offers: product.variants.map((v) => ({
+        '@type': 'Offer',
+        priceCurrency: 'INR',
+        price: v.price,
+        itemCondition: 'https://schema.org/NewCondition',
+        availability: 'https://schema.org/InStock',
+        name: `${product.name} ${v.size}`,
+        url: `${SITE_URL}/products/${product.id}`,
+      })),
+    };
+  }, [product]);
 
+  if (!product) return <Navigate to="/products" replace />;
+
+  const category = getCategoryById(product.category);
   const related = getRelatedProducts(product);
-  const colors = categoryColors[product.category] || categoryColors.biostimulants;
-
-  const waMessage = encodeURIComponent(
-    `Hi, I'd like to enquire about ${product.name} (${product.formulation}). Please share pricing and availability.`
-  );
-
-  const specs = [
-    { Icon: Droplet, label: 'Dosage', value: product.dosage },
-    { Icon: Beaker, label: 'Application', value: product.applicationMethod },
-    { Icon: Layers, label: 'Pack Size', value: product.packSize },
-    { Icon: Crop, label: 'Type', value: product.type },
-  ];
 
   return (
-    <div style={{ background: 'var(--cream)' }} className="min-h-screen">
-      {/* Breadcrumb header */}
-      <div className="pt-28 pb-6" style={{ background: 'var(--green-deep)' }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <nav className="flex items-center gap-2 text-xs flex-wrap" aria-label="Breadcrumb">
-            {[
-              { label: 'Home', to: '/' },
-              { label: 'Products', to: '/products' },
-              { label: categoryLabels[product.category], to: `/products?category=${product.category}` },
-              { label: product.name },
-            ].map((item, i, arr) => (
-              <span key={i} className="flex items-center gap-2">
-                {item.to ? (
-                  <Link to={item.to} className="transition-colors hover:text-white" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                    {item.label}
-                  </Link>
-                ) : (
-                  <span className="text-white font-semibold">{item.label}</span>
-                )}
-                {i < arr.length - 1 && <ChevronRight size={12} style={{ color: 'rgba(255,255,255,0.4)' }} />}
-              </span>
-            ))}
-          </nav>
-        </div>
-      </div>
+    <>
+      <Seo
+        title={`${product.name} | ${category.name} | ${COMPANY.name}`}
+        description={`${product.name} (${product.teluguName}) — ${product.description} Pack sizes from ${product.variants[product.variants.length - 1].size}. Contact ${COMPANY.name} for enquiries.`}
+        path={`/products/${product.id}`}
+        jsonLd={jsonLd}
+      />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-14 lg:py-20">
-        <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
-          {/* Left: Product Bottle Display */}
+      <nav aria-label="Breadcrumb" className="border-b border-line/70 bg-beige">
+        <div className="container-site flex items-center gap-1.5 py-4 text-xs font-medium text-ink-soft">
+          <Link to="/" className="hover:text-forest">Home</Link>
+          <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+          <Link to="/products" className="hover:text-forest">Products</Link>
+          <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+          <span aria-current="page" className="font-semibold text-forest">{product.name}</span>
+        </div>
+      </nav>
+
+      <section className="section bg-cream">
+        <div className="container-site grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-2"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: [0.21, 0.65, 0.32, 1] }}
           >
-            <div className="lg:sticky lg:top-28">
-              {/* Bottle display */}
-              <div
-                className="rounded-3xl p-10 lg:p-12 flex items-center justify-center relative overflow-hidden"
-                style={{
-                  background: `linear-gradient(160deg, ${colors.soft} 0%, ${colors.bg} 100%)`,
-                  border: `1.5px solid ${colors.border}`,
-                  minHeight: '500px',
-                }}
+            <div className="tilt-zone">
+              <div className="tilt-card relative overflow-hidden rounded-3xl border border-line/80 bg-linear-to-br from-mist via-white to-beige p-10 shadow-(--shadow-card) sm:p-14">
+                <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgb(72_168_104/0.12),transparent_60%)]" />
+                <span aria-hidden="true" className="absolute inset-x-16 bottom-10 h-7 rounded-[50%] bg-forest/15 blur-lg" />
+                <img
+                  src={product.image}
+                  alt={`${product.name} (${product.teluguName}) product pack`}
+                  className="tilt-pop relative mx-auto h-72 w-auto max-w-full rounded-xl object-contain drop-shadow-[0_28px_32px_rgb(23_33_28/0.3)] sm:h-96"
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          <Reveal y={20} className="flex flex-col gap-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="badge-type">{category.name}</span>
+              {product.type && <span className="badge-gold">{product.type}</span>}
+            </div>
+
+            <div>
+              <h1 className="text-4xl font-extrabold text-forest-dark sm:text-5xl">{product.name}</h1>
+              <p lang="te" className="mt-2 font-telugu text-lg text-ink-soft">{product.teluguName}</p>
+              {product.tagline && (
+                <p className="mt-3 text-base font-semibold text-leaf">{product.tagline}</p>
+              )}
+            </div>
+
+            <p className="max-w-xl text-base leading-relaxed text-ink-soft">{product.description}</p>
+
+            <div className="card overflow-hidden">
+              <table className="w-full text-left text-sm">
+                <caption className="sr-only">{product.name} pack sizes and prices</caption>
+                <thead>
+                  <tr className="border-b border-line bg-mist text-[0.7rem] font-bold uppercase tracking-wider text-ink-soft">
+                    <th scope="col" className="px-5 py-3">Pack Size</th>
+                    <th scope="col" className="px-5 py-3 text-right">Price</th>
+                    <th scope="col" className="px-5 py-3 text-right"><span className="sr-only">Enquire</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {product.variants.map((v) => (
+                    <tr key={v.size} className="border-b border-line/60 last:border-0">
+                      <td className="px-5 py-3.5 font-semibold text-ink">{v.size}</td>
+                      <td className="px-5 py-3.5 text-right font-display text-base font-extrabold text-forest">
+                        {formatINR(v.price)}
+                      </td>
+                      <td className="px-5 py-3.5 text-right">
+                        <a
+                          href={waHref(waProductMessage(product.name, v.size))}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-analytics="whatsapp-product-enquiry"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#178a45] hover:underline"
+                          aria-label={`WhatsApp enquiry for ${product.name} ${v.size}`}
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                          {t('enquireNow')}
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-ink-soft">{DISCLAIMERS.price}</p>
+
+            <div className="flex flex-wrap gap-3">
+              <Link
+                to={`/contact?product=${encodeURIComponent(`${product.name} (${product.variants[0].size})`)}&type=product`}
+                className="btn-primary"
+                data-analytics="contact-sales"
               >
-                {/* Decorative grid */}
-                <div className="absolute inset-0 opacity-[0.04]"
-                  style={{
-                    backgroundImage: `linear-gradient(${colors.color} 1px, transparent 1px), linear-gradient(90deg, ${colors.color} 1px, transparent 1px)`,
-                    backgroundSize: '32px 32px',
-                  }} />
-
-                {product.featured && (
-                  <div className="absolute top-6 right-6 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider text-white"
-                    style={{ background: 'linear-gradient(135deg, #EF9F27 0%, #d4891a 100%)', boxShadow: '0 6px 16px rgba(239,159,39,0.45)' }}>
-                    Flagship Product
-                  </div>
-                )}
-
-                <ProductBottle product={product} size="lg" floating />
-
-                {/* Glow under bottle */}
-                <div className="absolute pointer-events-none"
-                  style={{
-                    bottom: '10%', left: '50%', transform: 'translateX(-50%)',
-                    width: '50%', height: '28px',
-                    background: `radial-gradient(ellipse, ${colors.color}30 0%, transparent 70%)`,
-                    filter: 'blur(10px)',
-                  }} />
-              </div>
-
-              {/* Sticky enquiry card */}
-              <div className="mt-7 bg-white rounded-3xl p-7"
-                style={{ border: '1.5px solid #F3F4F6', boxShadow: '0 4px 24px rgba(15,61,31,0.06)' }}>
-                <h4 className="font-display font-bold text-lg mb-1" style={{ color: 'var(--green-deep)' }}>Enquire Now</h4>
-                <p className="text-sm mb-5" style={{ color: 'var(--ink-soft)' }}>Free expert consultation. We respond within 1 hour.</p>
-                <a
-                  href={`https://wa.me/919347959693?text=${waMessage}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-gold flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-sm mb-3"
-                >
-                  <MessageCircle size={18} />
-                  WhatsApp Enquiry
-                </a>
-                <a
-                  href="tel:+919347959693"
-                  className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-sm font-semibold transition-colors hover:bg-gray-50"
-                  style={{ border: '2px solid var(--green-mid)', color: 'var(--green-mid)' }}
-                >
-                  <Phone size={16} />
-                  +91 93479 59693
-                </a>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right: Product Info */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-3"
-          >
-            {/* Category badge */}
-            <span
-              className="inline-block px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-5"
-              style={{ background: colors.bg, color: colors.color, border: `1px solid ${colors.border}` }}
-            >
-              {categoryLabels[product.category]}
-            </span>
-
-            <h1 className="font-display font-bold leading-[1.05] mb-3"
-              style={{ fontSize: 'clamp(36px, 5vw, 56px)', color: 'var(--green-deep)', letterSpacing: '-0.025em' }}>
-              {product.name}
-            </h1>
-            <p className="font-mono text-base mb-2" style={{ color: 'var(--ink-soft)' }}>{product.formulation}</p>
-            <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: colors.color }}>{product.type}</p>
-
-            <p className="mt-8 text-lg leading-relaxed" style={{ color: 'var(--ink-soft)', lineHeight: 1.8 }}>
-              {product.description}
-            </p>
-
-            {/* Specs cards */}
-            <div className="mt-10 grid sm:grid-cols-2 gap-4">
-              {specs.map(spec => (
-                <div key={spec.label} className="p-5 rounded-2xl"
-                  style={{ background: 'white', border: '1.5px solid #F3F4F6' }}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center"
-                      style={{ background: colors.bg }}>
-                      <spec.Icon size={16} style={{ color: colors.color }} />
-                    </div>
-                    <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--ink-soft)' }}>
-                      {spec.label}
-                    </span>
-                  </div>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--ink)' }}>{spec.value}</p>
-                </div>
-              ))}
+                <Send className="h-4 w-4" aria-hidden="true" />
+                {t('enquireNow')}
+              </Link>
+              <a
+                href={waHref(waProductMessage(product.name, product.variants[0].size))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn bg-[#1faf57] text-white hover:bg-[#178a45] hover:-translate-y-0.5"
+                data-analytics="whatsapp-product-enquiry"
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                {t('whatsapp')}
+              </a>
+              <a href={telHref()} className="btn-outline" data-analytics="contact-sales">
+                <Phone className="h-4 w-4" aria-hidden="true" />
+                {t('callNow')}
+              </a>
             </div>
 
-            {/* Target Crops */}
-            <div className="mt-10">
-              <h3 className="font-display font-bold text-xl mb-4" style={{ color: 'var(--green-deep)' }}>
-                Target Crops
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {product.crops.map(crop => (
-                  <span key={crop} className="px-4 py-2 rounded-full text-sm font-medium"
-                    style={{ background: 'white', color: 'var(--ink)', border: '1.5px solid var(--cream-dark)' }}>
-                    {crop}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Problems & Benefits */}
-            <div className="grid sm:grid-cols-2 gap-5 mt-10">
-              {/* Problems */}
-              <div className="bg-white rounded-2xl p-6" style={{ border: '1.5px solid #FEE2E2' }}>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#FEF2F2' }}>
-                    <XCircle size={16} style={{ color: '#DC2626' }} />
-                  </div>
-                  <h3 className="font-display font-bold text-base" style={{ color: '#DC2626' }}>
-                    Problems It Solves
-                  </h3>
-                </div>
-                <ul className="space-y-3">
-                  {product.problems.map(p => (
-                    <li key={p} className="flex items-start gap-2.5 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ background: '#DC2626' }} />
-                      <span style={{ color: 'var(--ink-soft)', lineHeight: 1.6 }}>{p}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Benefits */}
-              <div className="bg-white rounded-2xl p-6" style={{ border: '1.5px solid #BBF7D0' }}>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#F0FDF4' }}>
-                    <CheckCircle size={16} style={{ color: 'var(--green-mid)' }} />
-                  </div>
-                  <h3 className="font-display font-bold text-base" style={{ color: 'var(--green-mid)' }}>
-                    Key Benefits
-                  </h3>
-                </div>
-                <ul className="space-y-3">
-                  {product.benefits.map(b => (
-                    <li key={b} className="flex items-start gap-2.5 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ background: 'var(--green-mid)' }} />
-                      <span style={{ color: 'var(--ink-soft)', lineHeight: 1.6 }}>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Safety reminder */}
-            <div className="mt-10 p-6 rounded-2xl flex items-start gap-4"
-              style={{ background: '#FFFBEB', border: '1.5px solid #FDE68A' }}>
-              <div className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center" style={{ background: 'rgba(217,119,6,0.15)' }}>
-                <AlertTriangle size={20} style={{ color: '#D97706' }} />
-              </div>
-              <div>
-                <p className="font-display font-bold text-base mb-1.5" style={{ color: '#92400E' }}>Safety Reminder</p>
-                <p className="text-sm leading-relaxed" style={{ color: '#92400E' }}>
-                  Always read and follow label instructions. Wear protective equipment during application.
-                  Store in original container away from children. Dispose of empty containers responsibly.
-                </p>
-              </div>
-            </div>
-          </motion.div>
+            <aside className="flex items-start gap-3 rounded-xl border border-gold/30 bg-gold/8 px-4 py-3.5">
+              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#8a6d12]" aria-hidden="true" />
+              <p className="text-sm leading-relaxed text-ink">
+                <strong>Safety note:</strong> {DISCLAIMERS.productSafety}
+              </p>
+            </aside>
+          </Reveal>
         </div>
+      </section>
 
-        {/* Related Products */}
-        {related.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-24 pt-16 border-t border-gray-200"
-          >
-            <h2 className="font-display font-bold text-3xl mb-2"
-              style={{ color: 'var(--green-deep)', letterSpacing: '-0.02em' }}>
-              Related Products
-            </h2>
-            <p className="text-base mb-10" style={{ color: 'var(--ink-soft)' }}>
-              Other products from the same category that may interest you
-            </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
+      {related.length > 0 && (
+        <section className="section bg-mist !pt-16">
+          <div className="container-site">
+            <Reveal>
+              <h2 className="mb-8 text-2xl font-extrabold text-forest-dark sm:text-3xl">
+                More from the {category.name}
+              </h2>
+            </Reveal>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {related.map((p, i) => (
-                <ProductCard key={p.id} product={p} index={i} />
+                <Reveal key={p.id} delay={i * 0.07} className="h-full">
+                  <ProductCard product={p} />
+                </Reveal>
               ))}
             </div>
-          </motion.section>
-        )}
-      </div>
-    </div>
+          </div>
+        </section>
+      )}
+    </>
   );
 }
